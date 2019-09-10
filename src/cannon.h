@@ -5,6 +5,7 @@
 #include "position.h"
 #include "board.h"
 #include "piece.h"
+
 class Cannon: public Piece
 {
 private:

@@ -17,7 +17,7 @@ $(OUT): board.o position.o soldier.o townhall.o cannon.o
 # main.o: board.cpp soldier.h townhall.h cannon.h
 
 # Board
-board.o: board.cpp board.h cannon.h soldier.h townhall.h 
+board.o: board.cpp board.h cannon.h soldier.h townhall.h piece.h position.h
 	$(CXX) -c board.cpp -o $@
 
 # Cannon

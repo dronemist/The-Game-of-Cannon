@@ -17,7 +17,7 @@ public:
     /// This functions move the piece to the new position
     void movePiece(Position);
     /// This function returns the type of piece
-    PieceType getType();
+    virtual PieceType getType();
     
 };
 
