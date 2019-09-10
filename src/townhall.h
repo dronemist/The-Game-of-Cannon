@@ -13,7 +13,7 @@ private:
 public:
     Townhall(Position, Colour);
     /// This function returns the type of piece
-    virtual PieceType getType();
+    PieceType getType();
 };
 
 #endif

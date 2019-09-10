@@ -1,6 +1,7 @@
 #ifndef SOLDIER_H
 #define SOLDIER_H
 #include <vector>
+#include <string>
 // DOUBT: Should we add it to the same file?
 #include "position.h"
 #include "board.h"
@@ -13,12 +14,13 @@ private:
 public:
     Soldier(Position, Colour);
     /// This function returns the allowed moves of the soldier
-    std::vector<Position> getAllowedMoves(Board &currentBoard);
+    std::vector<std::string> getAllowedMoves(Board &);
     /// This functions move the piece to the new position
     void movePiece(Position);
     /// This function returns the type of piece
-    virtual PieceType getType();
-    
+    PieceType getType();
+
+    bool isOpponentPresent(Piece *);
 };
 
 #endif

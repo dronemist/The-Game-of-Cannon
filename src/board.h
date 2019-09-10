@@ -23,5 +23,9 @@ public:
     Board(int = 8, int = 8);
     /// Temp function to print board
     void printBoard();
+    /// returns the number of rows
+    int getRows();
+    /// returns the number of columns
+    int getColumns();
 };
 #endif

@@ -57,13 +57,15 @@ void Board::printBoard() {
     }
 }
 
+int Board::getRows() {
+    return this->rows;
+}
+
+int Board::getColumns() {
+    return this->columns;
+}
+
 int main() {
     Board x;
-    Soldier soldier(Position(), Colour::black);
-    Townhall *townhall = new Townhall(Position(), Colour::black);
-    Piece *t = new Piece;
-    t = townhall;
-    delete townhall;
-    cout<<int(t->getType());
     x.printBoard();
 }
