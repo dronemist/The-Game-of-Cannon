@@ -9,6 +9,6 @@ public:
     Board currentBoard;
     /// The move that brought the state from previous state to current state
     std::string moveFromPreviousState;
-    std::vector<state*> expand; 
+    std::vector<state*> expand(); 
 };
 #endif

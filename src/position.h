@@ -5,9 +5,11 @@ struct Position
 {
     int x;
     int y;
+    Position(int, int);
+    Position();
 };
 /// Colour of a piece
 enum class Colour: std::int8_t {black = 0, white = 1};
 /// Type of piece
-enum class PieceType: std::int8_t {soldier = 0, cannon = 1, townhall = 2};
+enum class PieceType: std::int8_t {soldier = 0, cannon = 1, townhall = 2, null = 3};
 #endif
