@@ -67,5 +67,8 @@ int Board::getColumns() {
 
 int main() {
     Board x;
-    x.printBoard();
+    vector<string> temp = x.cannonBoard[5][0]->getAllowedMoves(x);
+    loop(i, 0, temp.size()) {
+        cout<<temp[i]<<endl;
+    }
 }

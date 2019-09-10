@@ -19,8 +19,10 @@ public:
     void movePiece(Position);
     /// This function returns the type of piece
     PieceType getType();
-
+    /// This function tells if an opponent is present
     bool isOpponentPresent(Piece *);
+    /// This function tells if soldier can move to ptr
+    bool canMoveToPosition(Piece *);
 };
 
 #endif
