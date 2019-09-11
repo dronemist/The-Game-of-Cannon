@@ -1,10 +1,17 @@
 #ifndef BOARD_H
 #define BOARD_H
 #include <vector>
+#include<list>
 #include "cannon.h"
 #include "soldier.h"
 #include "townhall.h"
 class Piece;
+
+// struct boardPieceAndItsPositionInList{
+//   Piece* piece;
+//   list<Position>::iterator it;
+// };
+
 class Board
 {
 private:
@@ -13,12 +20,12 @@ private:
     int rows;
     /// Number of columns
     int columns;
-    
+
 public:
     /// The current board
     std::vector<std::vector<Piece*>> cannonBoard;
     /// The list of pieces
-    std::vector<Piece*> listOfPieces;
+    std::list<Position> positionsOfSoldiersOnBoard;
     /// Constructor
     Board(int = 8, int = 8);
     /// Temp function to print board

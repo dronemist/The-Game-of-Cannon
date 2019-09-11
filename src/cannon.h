@@ -15,7 +15,8 @@ public:
     Cannon(Position, Position, Colour);
     /// This function returns the allowed move of the cannon
     // DOUBT: Is cannon shot a part of allowed moves
-    // std::vector<std::string> getAllowedMoves(Board &currentBoard);
+    std::vector<std::string> getAllowedMoves(Board &);
+    std::vector<std::string> getAllowedCannonMoves(Board &);
     /// This functions move the piece to the new starting position
     void movePiece(Position);
     /// This function returns the type of piece

@@ -11,3 +11,10 @@ Cannon::Cannon(Position startPosition, Position endPosition, Colour colour) {
 PieceType Cannon::getType() {
     return PieceType::cannon;
 }
+
+vector<string> Cannon::getAllowedMoves(Board &currentBoard) {
+  
+
+
+
+}
