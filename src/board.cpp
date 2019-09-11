@@ -65,10 +65,21 @@ int Board::getColumns() {
     return this->columns;
 }
 
-int main() {
-    Board x;
-    vector<string> temp = x.cannonBoard[5][0]->getAllowedMoves(x);
-    loop(i, 0, temp.size()) {
-        cout<<temp[i]<<endl;
-    }
+int Board::getValue() {
+    return 5;
 }
+
+// int main() {
+//     Board x;
+//     vector<string> temp = x.cannonBoard[5][0]->getAllowedMoves(x);
+//     loop(i, 0, temp.size()) {
+//         cout<<temp[i]<<endl;
+//     }
+//     Position p(1, 2);
+//     Position p2(2, 2);
+//     list<Position> p3;
+//     p3.push_back(p); p3.push_back(p2);
+//     list<Position>::iterator findIter = find(p3.begin(), p3.end(), 
+//         Position(2, 2));
+//     cout<<(findIter == p3.end());
+// }

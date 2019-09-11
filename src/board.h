@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 #include <vector>
-#include "cannon.h"
+#include <list>
 #include "soldier.h"
 #include "townhall.h"
 class Piece;
@@ -18,7 +18,7 @@ public:
     /// The current board
     std::vector<std::vector<Piece*>> cannonBoard;
     /// The list of pieces
-    std::vector<Piece*> listOfPieces;
+    std::list<Position> listOfPieces;
     /// Constructor
     Board(int = 8, int = 8);
     /// Temp function to print board
@@ -27,5 +27,7 @@ public:
     int getRows();
     /// returns the number of columns
     int getColumns();
+    /// Evaluation function of the board
+    int getValue();
 };
 #endif

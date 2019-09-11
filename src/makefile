@@ -10,34 +10,41 @@ OUT = main
 all: $(OUT)
 
 # Executable
-$(OUT): board.o position.o soldier.o townhall.o cannon.o
-	$(CXX) board.o position.o soldier.o townhall.o cannon.o -o main $(CXXFLAGS)
+$(OUT): main.o board.o position.o soldier.o townhall.o state.o search.o gamePlayer.o
+	$(CXX) board.o position.o soldier.o townhall.o state.o search.o gamePlayer.o main.o -o $(OUT) $(CXXFLAGS)
 
 # Main
-# main.o: board.cpp soldier.h townhall.h cannon.h
-
+main.o: gamePlayer.h state.h
+	$(CXX) -c main.cpp -o $@
 # Board
-board.o: board.cpp board.h cannon.h soldier.h townhall.h piece.h position.h
+board.o: board.h soldier.h townhall.h
 	$(CXX) -c board.cpp -o $@
 
+# GamePlayer
+gamePlayer.o: search.h state.h gamePlayer.h
+	$(CXX) -c gamePlayer.cpp -o $@
+
 # Cannon
-cannon.o: piece.h position.h board.h cannon.h
-	$(CXX) -c cannon.cpp -o $@
+# cannon.o: piece.h position.h board.h cannon.h
+# 	$(CXX) -c cannon.cpp -o $@
 
-# # State
-# state.o: state.h fileReader.h
-
+# State
+state.o: state.h board.h
+	$(CXX) -c state.cpp -o $@
+# Search
+search.o: search.h state.h
+	$(CXX) -c search.cpp -o $@
 # Soldier
 soldier.o: piece.h position.h board.h soldier.h
 	$(CXX) -c soldier.cpp -o $@
 
-# Expand
-townhall.o: piece.h position.h board.h soldier.h
+# Townhall
+townhall.o: piece.h position.h board.h townhall.h
 	$(CXX) -c townhall.cpp -o $@
 
 # Position
 position.o: position.h
-
+	$(CXX) -c position.cpp -o $@
 # Clean
 clean:
 	rm *.o
