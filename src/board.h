@@ -23,8 +23,10 @@ private:
 public:
     /// The current board
     std::vector<std::vector<Piece*>> cannonBoard;
-    /// The list of pieces, 0 for black, 1 for white
-    std::list<Position> positionsOfSoldiersOnBoard;
+    /// The list of Soldier pieces, 0 represent Black Soldiers and 1 represents white
+    std::vector< std::list<Position> > positionsOfSoldiersOnBoard; //
+
+
     /// Constructor
     Board(int = 8, int = 8);
     /// Temp function to print board
@@ -35,5 +37,11 @@ public:
     int getColumns();
     /// Evaluation function of the board
     int getValue();
+
+    /// Returns number of White Townhalls remaining
+    int numberOfWhiteTownhalls();
+
+    /// Returns number of Black Townhalls remaining
+    int numberOfBlackTownhalls();
 };
 #endif
