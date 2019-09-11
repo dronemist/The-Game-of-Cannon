@@ -18,13 +18,15 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
     vector<State*> nextStates = currentState->expand();
     if(isMax) {
         int best = INT32_MIN;
-        loop(i, 0, nextStates.size()) {    
+        loop(i, 0, nextStates.size()) {
             // calculating min values of child of max
             int minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta);
-            // deleting state pointer
-            delete nextStates[i];
+
+
             alpha = max(alpha, minVal);
             if(alpha >= beta) {
+              // deleting state pointer
+                delete nextStates[i];
                 return minVal;
             }
             if(minVal > best && currentDepth == 1) {
@@ -33,11 +35,13 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
             } else {
                 best = max(best, minVal);
             }
+            // deleting state pointer
+            delete nextStates[i];
         }
         return best;
     } else {
         int best = INT32_MAX;
-        loop(i, 0, nextStates.size()) {    
+        loop(i, 0, nextStates.size()) {
             // calculating max values of child of min
             int maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta);
             // deleting state pointer
@@ -49,5 +53,5 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
             best = min(best, maxVal);
         }
         return best;
-    }   
+    }
 }

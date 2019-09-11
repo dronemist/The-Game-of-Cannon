@@ -18,14 +18,14 @@ State::State(int rows, int columns, Colour colour) {
 vector<State*> State::expand() {
     // DOUBT: is it okay to make a copy?
     vector<State*> answer;
-    list<Position> currentList = this->currentBoard.listOfPieces;
+    list<Position> currentList = this->currentBoard.positionsOfSoldiersOnBoard;
     list<Position> :: iterator it;
     for(it = currentList.begin(); it != currentList.end(); ++it) {
 
         // If the piece is the same colour as the current piece
         // TODO: change if differenet lists exist
         if(this->currentBoard.cannonBoard[it->y][it->x]->getColour() == this->colourOfCurrentPlayer) {
-            vector<string> moves = this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard);
+            vector<string> moves = this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, & (*it));
             loop(i, 0, moves.size()) {
                 State *newState = new State();
                 // DOUBT: this assignment makes copies
@@ -33,8 +33,8 @@ vector<State*> State::expand() {
                 // make move on the new state
                 this->makeMove(moves[i], newState->currentBoard);
                 newState->moveFromPreviousState = moves[i];
-                newState->colourOfCurrentPlayer = 
-                this->colourOfCurrentPlayer == Colour::black ? Colour::white : Colour::white;
+                newState->colourOfCurrentPlayer =
+                this->colourOfCurrentPlayer == Colour::black ? Colour::white : Colour::black;
                 newState->previousState = this;
                 answer.push_back(newState);
             }
@@ -44,7 +44,7 @@ vector<State*> State::expand() {
 }
 
 void State::makeMove(string move, Board &newBoard) {
-    
+
     istringstream ss(move);
     string token, typeOfMove;
     int count = 0;
@@ -55,8 +55,8 @@ void State::makeMove(string move, Board &newBoard) {
         case 0:
             if(token == "S")
                 count++;
-            else 
-                throw exception();   
+            else
+                throw exception();
             break;
         case 1:
             xInitial = stoi(token);
@@ -71,18 +71,21 @@ void State::makeMove(string move, Board &newBoard) {
             count++;
         case 5:
             yFinal = stoi(token);
-            count++;    
+            count++;
         default:
             break;
         }
     }
     // Removing position from list
     if(newBoard.cannonBoard[yFinal][xFinal] != nullptr) {
-        list<Position>::iterator findIter = find(newBoard.listOfPieces.begin(), newBoard.listOfPieces.end(), 
+        int colourOfOppositePlayer =
+        this->colourOfCurrentPlayer == Colour::black ? 1 : 0;
+        list<Position>::iterator findIter =
+        find(newBoard.positionsOfSoldiersOnBoard.begin(), newBoard.positionsOfSoldiersOnBoard.end(),
         Position(xFinal, yFinal));
-        if(findIter != newBoard.listOfPieces.end())
+        if(findIter != newBoard.positionsOfSoldiersOnBoard.end())
         {
-            newBoard.listOfPieces.erase(findIter);
+            newBoard.positionsOfSoldiersOnBoard.erase(findIter);
         }
     }
     // making the move;
@@ -92,5 +95,5 @@ void State::makeMove(string move, Board &newBoard) {
     } else {
         newBoard.cannonBoard[yFinal][xFinal] = nullptr;
     }
-    
+
 }

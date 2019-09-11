@@ -23,7 +23,7 @@ private:
 public:
     /// The current board
     std::vector<std::vector<Piece*>> cannonBoard;
-    /// The list of pieces
+    /// The list of pieces, 0 for black, 1 for white
     std::list<Position> positionsOfSoldiersOnBoard;
     /// Constructor
     Board(int = 8, int = 8);

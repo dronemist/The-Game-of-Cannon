@@ -9,6 +9,11 @@ Board::Board(int rows, int columns) {
     this->rows = rows;
     // Initialising as null
     this->cannonBoard = vector<vector<Piece*>> (rows, vector<Piece*>(columns, nullptr));
+    // list<Position> temp_list = {Position(0,0)};
+    // temp_list.pop_back();
+    // this->positionsOfSoldiersOnBoard.push_back(temp_list);
+    // this->positionsOfSoldiersOnBoard.push_back(temp_list);
+    // cout<<"Initialised"<<endl;
     // filling the white pieces
     loop(j, 0, columns) {
         if(j % 2 == 0) {
