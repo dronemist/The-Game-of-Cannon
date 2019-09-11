@@ -1,8 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 #include <vector>
-#include<list>
-#include "cannon.h"
+#include <list>
 #include "soldier.h"
 #include "townhall.h"
 class Piece;
@@ -34,5 +33,7 @@ public:
     int getRows();
     /// returns the number of columns
     int getColumns();
+    /// Evaluation function of the board
+    int getValue();
 };
 #endif

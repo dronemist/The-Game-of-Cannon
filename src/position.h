@@ -5,6 +5,11 @@ struct Position
 {
     int x;
     int y;
+    bool operator == (Position const &obj) {
+        if(x == obj.x && y == obj.y)
+            return true;
+        return false;    
+    }
     Position(int, int);
     Position();
 };
