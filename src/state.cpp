@@ -33,7 +33,7 @@ vector<State*> State::expand() {
     // DOUBT: is it okay to make a copy?
     vector<State*> answer;
     list<Position> currentList =
-    this->colourOfCurrentPlayer == Colour::black ? 
+    this->colourOfCurrentPlayer == Colour::black ?
     this->currentBoard.positionsOfSoldiersOnBoard[0] : this->currentBoard.positionsOfSoldiersOnBoard[1];
 
     list<Position> :: iterator it;
@@ -66,6 +66,12 @@ void State::makeMove(string move, Board &newBoard) {
     string token, typeOfMove;
     int count = 0;
     int xInitial, xFinal, yInitial, yFinal;
+
+    if(move == ""){
+        cout<<"No moves remaining, exiting"<<endl;
+        exit(0);
+    }
+
     while(ss>>token) {
         switch (count)
         {
@@ -99,15 +105,15 @@ void State::makeMove(string move, Board &newBoard) {
         default:
             break;
         }
-    }  
+    }
     // making the move;
     if(typeOfMove == "M") {
 
-        // adding final to this->colour piece list   
+        // adding final to this->colour piece list
         if(newBoard.cannonBoard[yInitial][xInitial]->getColour() == Colour::black)
             newBoard.positionsOfSoldiersOnBoard[0].push_back(Position(xFinal, yFinal));
         else
-            newBoard.positionsOfSoldiersOnBoard[1].push_back(Position(xFinal, yFinal));    
+            newBoard.positionsOfSoldiersOnBoard[1].push_back(Position(xFinal, yFinal));
         // removing final from opposite of this->colour piece list
         this->removePositonFromBoard(newBoard, xFinal, yFinal);
         newBoard.cannonBoard[yFinal][xFinal] = newBoard.cannonBoard[yInitial][xInitial];
@@ -126,12 +132,15 @@ int State::getValue(Colour colour) {
     int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
     int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
     int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
-    int value = (blackSoldiers - whiteSoldiers) + 50 * (blackTownhalls - whiteTownhalls);
-    
+    int blackCannons = this->currentBoard.numberOfCannonsOnBoard(this->currentBoard.positionsOfSoldiersOnBoard, 0);
+    int whiteCannons = this->currentBoard.numberOfCannonsOnBoard(this->currentBoard.positionsOfSoldiersOnBoard, 1);
+
+    int value = (blackSoldiers - whiteSoldiers) + 50 * (blackTownhalls - whiteTownhalls) + 10 * (blackCannons - whiteCannons);
+
     if(colour == Colour::black)
         return value;
     else
     {
         return -value;
-    }  
+    }
 }

@@ -41,5 +41,7 @@ public:
 
     /// Returns number of Black Townhalls remaining
     int numberOfBlackTownhalls();
+
+    int numberOfCannonsOnBoard(std::vector< std::list<Position> > &, int);
 };
 #endif
