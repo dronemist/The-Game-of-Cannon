@@ -35,8 +35,6 @@ public:
     int getRows();
     /// returns the number of columns
     int getColumns();
-    /// Evaluation function of the board
-    int getValue();
 
     /// Returns number of White Townhalls remaining
     int numberOfWhiteTownhalls();

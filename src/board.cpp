@@ -28,7 +28,7 @@ Board::Board(int rows, int columns) {
             Soldier *soldier3 = new Soldier(Colour::white);
             this->cannonBoard[2][j] = soldier3;
 
-            //Inserting these soldier positions into list of soldiers positions
+            // Inserting these soldier positions into list of soldiers positions
             this->positionsOfSoldiersOnBoard[1].push_back(Position(j, 0));
             this->positionsOfSoldiersOnBoard[1].push_back(Position(j, 1));
             this->positionsOfSoldiersOnBoard[1].push_back(Position(j, 2));
@@ -48,7 +48,7 @@ Board::Board(int rows, int columns) {
             Soldier *soldier3 = new Soldier(Colour::black);
             this->cannonBoard[y - 2][j] = soldier3;
 
-            //Inserting these soldier positions into list of soldier positions
+            // Inserting these soldier positions into list of soldier positions
             this->positionsOfSoldiersOnBoard[0].push_back(Position(j, y));
             this->positionsOfSoldiersOnBoard[0].push_back(Position(j, y - 1));
             this->positionsOfSoldiersOnBoard[0].push_back(Position(j, y - 2));
@@ -86,16 +86,12 @@ int Board::getColumns() {
     return this->columns;
 }
 
-int Board::getValue() {
-    return 5;
-}
-
-
 int Board::numberOfBlackTownhalls(){
   int count = 0;
 
-  for(int j = 0; j < this->columns; j+=2) {
-    if(this->cannonBoard[this->rows - 1][j] != nullptr){
+  for(int j = 1; j < this->columns; j += 2) {
+    if(this->cannonBoard[this->rows - 1][j] != nullptr 
+    && this->cannonBoard[this->rows - 1][j]->getType() == PieceType::townhall){
       ++count;
     }
   }
@@ -106,8 +102,9 @@ int Board::numberOfBlackTownhalls(){
 int Board::numberOfWhiteTownhalls(){
   int count = 0;
 
-  for(int j = 0; j < this->columns; j+=2) {
-    if(this->cannonBoard[0][j] != nullptr){
+  for(int j = 0; j < this->columns; j += 2) {
+    if(this->cannonBoard[0][j] != nullptr &&
+    this->cannonBoard[0][j]->getType() == PieceType::townhall){
       ++count;
     }
   }
