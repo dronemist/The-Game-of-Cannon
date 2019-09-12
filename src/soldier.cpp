@@ -120,16 +120,16 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
   int numCols = currentBoard.getColumns();
   // int blackWhiteFactor = this->colour == Colour::black ? 1 : -1;
 
-  //Checking for the four orientations
-  bool isLeftMostOfHorizontalCannon = ((x+2) < numCols) && isAllySoldierPresent(currentBoard.cannonBoard[y][x+1]) && isAllySoldierPresent(currentBoard.cannonBoard[y][x+2]);
+  // Checking for the four orientations
+  bool isLeftMostOfHorizontalCannon = ((x + 2) < numCols) && isAllySoldierPresent(currentBoard.cannonBoard[y][x+1]) && isAllySoldierPresent(currentBoard.cannonBoard[y][x+2]);
   bool isTopLeftMostOfCannon = ((x+2) < numCols) && ((y+2) < numRows) && isAllySoldierPresent(currentBoard.cannonBoard[y+1][x+1]) && isAllySoldierPresent(currentBoard.cannonBoard[y+2][x+2]);
   bool isTopMostOfVerticalCannon = ((y+2) < numRows) && isAllySoldierPresent(currentBoard.cannonBoard[y+1][x]) && isAllySoldierPresent(currentBoard.cannonBoard[y+2][x]);
-  bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(currentBoard.cannonBoard[y+1][x-1]) && isAllySoldierPresent(currentBoard.cannonBoard[y-2][x+2]);
+  bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(currentBoard.cannonBoard[y+1][x-1]) && isAllySoldierPresent(currentBoard.cannonBoard[y + 2][x - 2]);
 
 
 
   if(isLeftMostOfHorizontalCannon){
-    //First checking for movement of cannon
+    // First checking for movement of cannon
     if((x + 3) < numCols && canMoveToPosition(currentBoard.cannonBoard[y][x+3])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x, y, x + 3, y));
@@ -140,7 +140,7 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
       answer.push_back(moveEncoding(x + 2, y, x - 1, y));
     }
 
-    //Checking for closer CannonShot in right direction, can do blank shot also
+    // Checking for closer CannonShot in right direction, can do blank shot also
     if((x + 4) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y][x+4])){
       answer.push_back(cannonShotEncoding(x, y, x + 4, y));
     }
@@ -184,7 +184,7 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
     //Further shot in down direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
     if((y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x]) && canMoveToPosition(currentBoard.cannonBoard[y+5][x])){
-      answer.push_back(cannonShotEncoding(x, y, x + 5, y));
+      answer.push_back(cannonShotEncoding(x, y, x, y + 5));
     }
 
     //Checking for shooting upwards, closer shot
@@ -213,32 +213,29 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
       answer.push_back(moveEncoding(x + 2, y + 2, x - 1, y - 1));
     }
 
-    //Checking for closer CannonShot in down direction, can do blank shot also
+    // Checking for closer CannonShot in down direction, can do blank shot also
     if((x + 4) < numCols && (y + 4) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y+4][x+4])){
       answer.push_back(cannonShotEncoding(x, y, x + 4, y + 4));
     }
 
-    //Further shot in down direction
+    // Further shot in down direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
     if((x + 5) < numCols && (y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y+5][x+5])){
       answer.push_back(cannonShotEncoding(x, y, x + 5, y + 5));
     }
 
-    //Checking for shooting upwards, closer shot
+    // Checking for shooting upwards, closer shot
     if((x - 2) >= 0 && (y - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x-1]) && canMoveToPosition(currentBoard.cannonBoard[y-2][x-2])){
       answer.push_back(cannonShotEncoding(x, y, x - 2, y - 2));
     }
 
-    //Further shot in upper direction
+    // Further shot in upper direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
     if((x - 3) >= 0 && (y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x-1]) && canMoveToPosition(currentBoard.cannonBoard[y-3][x-3])){
       answer.push_back(cannonShotEncoding(x, y, x - 3, y - 3));
     }
 
   }
-
-
-
 
   if(isTopRightMostOfCannon){
     //First checking for movement of cannon
@@ -273,8 +270,6 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
     if((x + 3) < numCols && (y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x+1]) && canMoveToPosition(currentBoard.cannonBoard[y-3][x+3])){
       answer.push_back(cannonShotEncoding(x, y, x + 3, y - 3));
     }
-
-
   }
 
 
@@ -315,6 +310,7 @@ string Soldier::moveEncoding(int initialPositionX, int initialPositionY, int fin
     return ("S " + intToString(initialPositionX) + " " + intToString(initialPositionY) + " M " + intToString(finalPositionX) + " " + intToString(finalPositionY));
 }
 
-string Soldier::cannonShotEncoding(int soldierPositionX, int soldierPositionY, int shotPositionX, int shotPositionY){ //this solider is doing the cannonshot only
+string Soldier::cannonShotEncoding(int soldierPositionX, int soldierPositionY, int shotPositionX, int shotPositionY){ 
+    // this solider is doing the cannonshot only
     return ("S " + intToString(soldierPositionX) + " " + intToString(soldierPositionY) + " B " + intToString(shotPositionX) + " " + intToString(shotPositionY));
 }

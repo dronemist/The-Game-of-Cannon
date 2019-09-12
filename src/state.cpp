@@ -6,6 +6,20 @@
 
 using namespace std;
 
+void State::removePositonFromBoard(Board &newBoard, int x, int y) {
+    if(newBoard.cannonBoard[y][x] != nullptr) {
+        int colourOfOppositePlayer =
+        this->colourOfCurrentPlayer == Colour::black ? 1 : 0;
+        list<Position>::iterator findIter =
+        find(newBoard.positionsOfSoldiersOnBoard.begin(), newBoard.positionsOfSoldiersOnBoard.end(),
+        Position(x, y));
+        if(findIter != newBoard.positionsOfSoldiersOnBoard.end())
+        {
+            newBoard.positionsOfSoldiersOnBoard.erase(findIter);
+        }
+    }
+}
+
 State::State(int rows, int columns, Colour colour) {
     Board b(rows, columns);
     this->currentBoard = b;
@@ -56,46 +70,46 @@ void State::makeMove(string move, Board &newBoard) {
         switch (count)
         {
         case 0:
-            if(token == "S")
+            if(token == "S") {
                 count++;
+            }
             else
                 throw exception();
             break;
         case 1:
             xInitial = stoi(token);
             count++;
+            break;
         case 2:
             yInitial = stoi(token);
             count++;
+            break;
         case 3:
             typeOfMove = token;
+            count++;
+            break;
         case 4:
             xFinal = stoi(token);
             count++;
+            break;
         case 5:
             yFinal = stoi(token);
             count++;
+            break;
         default:
             break;
         }
-    }
-    // Removing position from list
-    if(newBoard.cannonBoard[yFinal][xFinal] != nullptr) {
-        int colourOfOpposition =
-        this->colourOfCurrentPlayer == Colour::black ? 1 : 0; //If current player is black, opposition is white
-        list<Position>::iterator findIter =
-        find(newBoard.positionsOfSoldiersOnBoard[colourOfOpposition].begin(), newBoard.positionsOfSoldiersOnBoard[colourOfOpposition].end(),
-        Position(xFinal, yFinal));
-        if(findIter != newBoard.positionsOfSoldiersOnBoard[colourOfOpposition].end())
-        {
-            newBoard.positionsOfSoldiersOnBoard[colourOfOpposition].erase(findIter);
-        }
-    }
+    }  
     // making the move;
     if(typeOfMove == "M") {
+        if(newBoard.cannonBoard[yFinal][xFinal] == nullptr) {
+            newBoard.positionsOfSoldiersOnBoard.push_back(Position(xFinal, yFinal));
+        }
         newBoard.cannonBoard[yFinal][xFinal] = newBoard.cannonBoard[yInitial][xInitial];
+        this->removePositonFromBoard(newBoard, xInitial, yInitial);
         newBoard.cannonBoard[yInitial][xInitial] = nullptr;
     } else {
+        this->removePositonFromBoard(newBoard, xFinal, yFinal);
         newBoard.cannonBoard[yFinal][xFinal] = nullptr;
     }
 

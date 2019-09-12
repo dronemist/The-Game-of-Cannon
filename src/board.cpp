@@ -60,12 +60,18 @@ void Board::printBoard() {
     loop(i, 0, this->rows) {
         loop(j, 0, this->columns) {
             if(this->cannonBoard[i][j] == nullptr) {
-                cout<<" ";
+                cout<<"0 ";
             } else {
                 if(this->cannonBoard[i][j]->getType() == PieceType::soldier)
-                    cout<<"S";
+                    if(this->cannonBoard[i][j]->getColour() == Colour::black)
+                        cout<<"1 ";
+                    else 
+                        cout<<"3 ";    
                 else if(this->cannonBoard[i][j]->getType() == PieceType::townhall)
-                    cout<<"T";
+                    if(this->cannonBoard[i][j]->getColour() == Colour::black)
+                        cout<<"2 ";
+                    else 
+                        cout<<"4 ";    
             }
         }
         cout<<endl;
