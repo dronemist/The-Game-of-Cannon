@@ -13,21 +13,20 @@ using namespace std;
 ///   - optimalMove: move for most optimal play
 int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, int alpha, int beta) {
     if(currentDepth == ply) {
-        return currentState->currentBoard.getValue();
+        return currentState->currentBoard.getValue(); //NOTE: What if ply = 1?
     }
     vector<State*> nextStates = currentState->expand();
+
     if(isMax) {
         int best = INT32_MIN;
         loop(i, 0, nextStates.size()) {
             // calculating min values of child of max
             int minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta);
-
-
             alpha = max(alpha, minVal);
             if(alpha >= beta) {
               // deleting state pointer
-                delete nextStates[i];
-                return minVal;
+              delete nextStates[i];
+              return minVal;
             }
             if(minVal > best && currentDepth == 1) {
                 best = minVal;
@@ -35,6 +34,7 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
             } else {
                 best = max(best, minVal);
             }
+
             // deleting state pointer
             delete nextStates[i];
         }

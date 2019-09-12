@@ -32,28 +32,31 @@ State::State(int rows, int columns, Colour colour) {
 vector<State*> State::expand() {
     // DOUBT: is it okay to make a copy?
     vector<State*> answer;
-    list<Position> currentList = this->currentBoard.positionsOfSoldiersOnBoard;
+    list<Position> currentList =
+    this->colourOfCurrentPlayer == Colour::black ? this->currentBoard.positionsOfSoldiersOnBoard[0] : this->currentBoard.positionsOfSoldiersOnBoard[1];
+
     list<Position> :: iterator it;
     for(it = currentList.begin(); it != currentList.end(); ++it) {
 
         // If the piece is the same colour as the current piece
         // TODO: change if differenet lists exist
-        if(this->currentBoard.cannonBoard[it->y][it->x]->getColour() == this->colourOfCurrentPlayer) {
-            vector<string> moves = this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, & (*it));
-            loop(i, 0, moves.size()) {
-                State *newState = new State();
-                // DOUBT: this assignment makes copies
-                newState->currentBoard = this->currentBoard;
-                // make move on the new state
-                this->makeMove(moves[i], newState->currentBoard);
-                newState->moveFromPreviousState = moves[i];
-                newState->colourOfCurrentPlayer =
-                this->colourOfCurrentPlayer == Colour::black ? Colour::white : Colour::black;
-                newState->previousState = this;
-                answer.push_back(newState);
-            }
-        }
+        // if(this->currentBoard.cannonBoard[it->y][it->x]->getColour() == this->colourOfCurrentPlayer) {
+          vector<string> moves = this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, (& (*it)));
+          loop(i, 0, moves.size()) {
+              State *newState = new State();
+              // DOUBT: this assignment makes copies
+              newState->currentBoard = this->currentBoard;
+              // make move on the new state
+              this->makeMove(moves[i], newState->currentBoard);
+              newState->moveFromPreviousState = moves[i];
+              newState->colourOfCurrentPlayer =
+              this->colourOfCurrentPlayer == Colour::black ? Colour::white : Colour::black;
+              newState->previousState = this;
+              answer.push_back(newState);
+          }
+        // }
     }
+    cout<<this->moveFromPreviousState<<endl;
     return answer;
 }
 
@@ -96,8 +99,7 @@ void State::makeMove(string move, Board &newBoard) {
         default:
             break;
         }
-    }
-    
+    }  
     // making the move;
     if(typeOfMove == "M") {
         if(newBoard.cannonBoard[yFinal][xFinal] == nullptr) {

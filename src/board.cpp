@@ -9,10 +9,10 @@ Board::Board(int rows, int columns) {
     this->rows = rows;
     // Initialising as null
     this->cannonBoard = vector<vector<Piece*>> (rows, vector<Piece*>(columns, nullptr));
-    // list<Position> temp_list = {Position(0,0)};
-    // temp_list.pop_back();
-    // this->positionsOfSoldiersOnBoard.push_back(temp_list);
-    // this->positionsOfSoldiersOnBoard.push_back(temp_list);
+    list<Position> temp_list = {Position(0,0)};
+    temp_list.pop_back();
+    this->positionsOfSoldiersOnBoard.push_back(temp_list);
+    this->positionsOfSoldiersOnBoard.push_back(temp_list);
     // cout<<"Initialised"<<endl;
     // filling the white pieces
     loop(j, 0, columns) {
@@ -29,9 +29,9 @@ Board::Board(int rows, int columns) {
             this->cannonBoard[2][j] = soldier3;
 
             //Inserting these soldier positions into list of soldiers positions
-            positionsOfSoldiersOnBoard.push_back(Position(j, 0));
-            positionsOfSoldiersOnBoard.push_back(Position(j, 1));
-            positionsOfSoldiersOnBoard.push_back(Position(j, 2));
+            this->positionsOfSoldiersOnBoard[1].push_back(Position(j, 0));
+            this->positionsOfSoldiersOnBoard[1].push_back(Position(j, 1));
+            this->positionsOfSoldiersOnBoard[1].push_back(Position(j, 2));
         }
     }
     // filling the black pieces
@@ -49,9 +49,9 @@ Board::Board(int rows, int columns) {
             this->cannonBoard[y - 2][j] = soldier3;
 
             //Inserting these soldier positions into list of soldier positions
-            positionsOfSoldiersOnBoard.push_back(Position(j, y));
-            positionsOfSoldiersOnBoard.push_back(Position(j, y - 1));
-            positionsOfSoldiersOnBoard.push_back(Position(j, y - 2));
+            this->positionsOfSoldiersOnBoard[0].push_back(Position(j, y));
+            this->positionsOfSoldiersOnBoard[0].push_back(Position(j, y - 1));
+            this->positionsOfSoldiersOnBoard[0].push_back(Position(j, y - 2));
         }
     }
 }
@@ -90,6 +90,30 @@ int Board::getValue() {
     return 5;
 }
 
+
+int Board::numberOfBlackTownhalls(){
+  int count = 0;
+
+  for(int j = 0; j < this->columns; j+=2) {
+    if(this->cannonBoard[this->rows - 1][j] != nullptr){
+      ++count;
+    }
+  }
+
+  return count;
+}
+
+int Board::numberOfWhiteTownhalls(){
+  int count = 0;
+
+  for(int j = 0; j < this->columns; j+=2) {
+    if(this->cannonBoard[0][j] != nullptr){
+      ++count;
+    }
+  }
+
+  return count;
+}
 // int main() {
 //     Board x;
 //     vector<string> temp = x.cannonBoard[5][0]->getAllowedMoves(x);

@@ -8,10 +8,11 @@ struct Position
     bool operator == (Position const &obj) {
         if(x == obj.x && y == obj.y)
             return true;
-        return false;    
+        return false;
     }
     Position(int, int);
     Position();
+
 };
 /// Colour of a piece
 enum class Colour: std::int8_t {black = 0, white = 1};
