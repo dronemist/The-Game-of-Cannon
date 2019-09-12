@@ -14,7 +14,7 @@ $(OUT): main.o board.o position.o soldier.o townhall.o state.o search.o gamePlay
 	$(CXX) board.o position.o soldier.o townhall.o state.o search.o gamePlayer.o main.o -o $(OUT) $(CXXFLAGS)
 
 # Main
-main.o: gamePlayer.h state.h
+main.o: gamePlayer.h state.h board.h piece.h position.h soldier.h townhall.h
 	$(CXX) -c main.cpp -o $@
 # Board
 board.o: board.h soldier.h townhall.h

@@ -17,5 +17,6 @@ public:
     void makeMove(std::string, Board &);
     /// Colour of the player whose move it is;
     Colour colourOfCurrentPlayer;
+    void removePositonFromBoard(Board &, int , int);
 };
 #endif
