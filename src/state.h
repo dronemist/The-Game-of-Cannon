@@ -10,7 +10,7 @@ public:
     Board currentBoard;
     /// The move that brought the state from previous state to current state
     std::string moveFromPreviousState;
-    std::vector<State*> expand(); 
+    std::vector<State*> expand();
     /// constructor;
     State(int = 8, int = 8, Colour = Colour::black);
     /// This function takes the move

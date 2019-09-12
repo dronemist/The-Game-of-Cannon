@@ -12,7 +12,7 @@ GamePlayer::GamePlayer(Colour colour, int ply) {
 string GamePlayer::play() {
     string optimalMove = "";
     minimax(1, this->currentState, true, this->ply, optimalMove, INT32_MIN, INT32_MAX);
-    // cout<<optimalMove<<endl;
+    cout<<optimalMove<<endl;
     // changing board of current state
     this->currentState->makeMove(optimalMove, this->currentState->currentBoard);
     return optimalMove;

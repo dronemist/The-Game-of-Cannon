@@ -21,6 +21,7 @@ private:
     int columns;
 
 public:
+
     /// The current board
     std::vector<std::vector<Piece*>> cannonBoard;
     /// The list of Soldier pieces, 0 represent Black Soldiers and 1 represents white
@@ -29,6 +30,11 @@ public:
 
     /// Constructor
     Board(int = 8, int = 8);
+
+    ///Copy constructor
+    Board(Board &board);
+
+    Board operator=(Board&);
     /// Temp function to print board
     void printBoard();
     /// returns the number of rows

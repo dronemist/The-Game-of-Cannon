@@ -56,6 +56,13 @@ Board::Board(int rows, int columns) {
     }
 }
 
+Board::Board(Board &board){
+  this->columns = board.getColumns();
+  this->rows = board.getRows();
+  this->cannonBoard = board.cannonBoard;
+  this->positionsOfSoldiersOnBoard = board.positionsOfSoldiersOnBoard;
+}
+
 void Board::printBoard() {
     loop(i, 0, this->rows) {
         loop(j, 0, this->columns) {
@@ -84,11 +91,18 @@ int Board::getValue() {
     return 5;
 }
 
+Board Board::operator = (Board &board) {
+  this->columns = board.getColumns();
+  this->rows = board.getRows();
+  this->cannonBoard = board.cannonBoard;
+  this->positionsOfSoldiersOnBoard = board.positionsOfSoldiersOnBoard;
+  return board;
+}
 
 int Board::numberOfBlackTownhalls(){
   int count = 0;
 
-  for(int j = 0; j < this->columns; j+=2) {
+  for(int j = 1; j < this->columns; j+=2) {
     if(this->cannonBoard[this->rows - 1][j] != nullptr){
       ++count;
     }
