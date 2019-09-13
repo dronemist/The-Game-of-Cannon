@@ -64,7 +64,7 @@ vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position)
         // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M "
         // + intToString(x + 1) + " " + intToString(y));
         answer.push_back(moveEncoding(x, y, x + 1, y));
-        if(currentBoard.cannonBoard[y][x + 1]->getType == PieceType::soldier) {
+        if(currentBoard.cannonBoard[y][x + 1]->getType() == PieceType::soldier) {
           canRetreat = true;
         }
     }
