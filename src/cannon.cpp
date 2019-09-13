@@ -13,7 +13,7 @@ PieceType Cannon::getType() {
 }
 
 vector<string> Cannon::getAllowedMoves(Board &currentBoard) {
-  
+
 
 
 

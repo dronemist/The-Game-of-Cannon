@@ -9,7 +9,7 @@ Board::Board(int rows, int columns) {
     this->rows = rows;
     // Initialising as null
     this->cannonBoard = vector<vector<Piece*>> (rows, vector<Piece*>(columns, nullptr));
-    list<Position> temp_list = {Position(0,0)};
+    vector<Position> temp_list = {Position(0,0)};
     temp_list.pop_back();
     this->positionsOfSoldiersOnBoard.push_back(temp_list);
     this->positionsOfSoldiersOnBoard.push_back(temp_list);
@@ -119,7 +119,7 @@ bool isAllySoldierPresent(Piece* ptr, int soldierColor){
 }
 
 
-int Board::numberOfCannonsOnBoard(vector< list<Position> > &positionsOfSoldiersOnBoard, int pieceColour){  // Piece color 0 for black, 1 for white
+int Board::numberOfCannonsOnBoard(vector< vector<Position> > &positionsOfSoldiersOnBoard, int pieceColour){  // Piece color 0 for black, 1 for white
 
   int numRows = this->getRows();
   int numCols = this->getColumns();
@@ -127,7 +127,7 @@ int Board::numberOfCannonsOnBoard(vector< list<Position> > &positionsOfSoldiersO
 
 
 
-  for(list<Position>::iterator it = positionsOfSoldiersOnBoard[pieceColour].begin(); it != positionsOfSoldiersOnBoard[pieceColour].end(); ++it){
+  for(vector<Position>::iterator it = positionsOfSoldiersOnBoard[pieceColour].begin(); it != positionsOfSoldiersOnBoard[pieceColour].end(); ++it){
 
     int x = it-> x;
     int y = it-> y;

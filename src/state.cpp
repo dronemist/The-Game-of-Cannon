@@ -10,7 +10,7 @@ void State::removePositonFromBoard(Board &newBoard, int x, int y) {
     if(newBoard.cannonBoard[y][x] != nullptr) {
         int pos =
         newBoard.cannonBoard[y][x]->getColour() == Colour::black ? 0 : 1;
-        list<Position>::iterator findIter =
+        vector<Position>::iterator findIter =
         find(newBoard.positionsOfSoldiersOnBoard[pos].begin(), newBoard.positionsOfSoldiersOnBoard[pos].end(),
         Position(x, y));
         if(findIter != newBoard.positionsOfSoldiersOnBoard[pos].end())
@@ -29,20 +29,21 @@ State::State(int rows, int columns, Colour colour) {
     this->colourOfCurrentPlayer = colour;
 }
 
-vector<State*> State::expand() {
+void State::expand(vector<State*> &answer) {
     // DOUBT: is it okay to make a copy?
-    vector<State*> answer;
-    list<Position> currentList =
+    // vector<State*> answer;
+    vector<Position> currentList =
     this->colourOfCurrentPlayer == Colour::black ?
     this->currentBoard.positionsOfSoldiersOnBoard[0] : this->currentBoard.positionsOfSoldiersOnBoard[1];
 
-    list<Position> :: iterator it;
+    vector<Position> :: iterator it;
     for(it = currentList.begin(); it != currentList.end(); ++it) {
 
         // If the piece is the same colour as the current piece
         // TODO: change if differenet lists exist
         // if(this->currentBoard.cannonBoard[it->y][it->x]->getColour() == this->colourOfCurrentPlayer) {
-        vector<string> moves = this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, (& (*it)));
+        vector<string> moves;
+        this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, (& (*it)), moves);
         loop(i, 0, moves.size()) {
             State *newState = new State();
             // DOUBT: this assignment makes copies
@@ -57,7 +58,7 @@ vector<State*> State::expand() {
             answer.push_back(newState);
         }
     }
-    return answer;
+    // return answer;
 }
 
 void State::makeMove(string move, Board &newBoard) {

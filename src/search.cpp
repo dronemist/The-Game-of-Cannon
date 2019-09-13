@@ -31,21 +31,22 @@ struct myComp{
 int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, int alpha, int beta, Colour colour) {
 
     if(currentDepth == ply) {
-        return currentState->getValue(colour); 
+        return currentState->getValue(colour);
         // NOTE: What if ply = 1?
     }
-    // TODO: Don't return vector
-    vector<State*> nextStates = currentState->expand();
+
+    vector<State*> nextStates;
+    currentState->expand(nextStates);
     if (nextStates.size() == 0) {
       return currentState->getValue(colour);
     }
 
     myComp myCompInstance = myComp(colour);
     // Sorts states in ascending order
-    sort(nextStates.begin(), nextStates.end(), myCompInstance); 
+    sort(nextStates.begin(), nextStates.end(), myCompInstance);
     if(isMax){
         // NOTE: Check if we have to reverse for Max or Min
-        reverse(nextStates.begin(), nextStates.end());   
+        reverse(nextStates.begin(), nextStates.end());
     }
 
 

@@ -24,7 +24,7 @@ public:
     /// The current board
     std::vector<std::vector<Piece*>> cannonBoard;
     /// The list of Soldier pieces, 0 represent Black Soldiers and 1 represents white
-    std::vector< std::list<Position> > positionsOfSoldiersOnBoard; //
+    std::vector< std::vector<Position> > positionsOfSoldiersOnBoard; //
 
 
     /// Constructor
@@ -42,6 +42,6 @@ public:
     /// Returns number of Black Townhalls remaining
     int numberOfBlackTownhalls();
 
-    int numberOfCannonsOnBoard(std::vector< std::list<Position> > &, int);
+    int numberOfCannonsOnBoard(std::vector< std::vector<Position> > &, int);
 };
 #endif

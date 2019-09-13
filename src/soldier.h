@@ -15,10 +15,10 @@ public:
     // Soldier(Position, Colour);
     Soldier(Colour);
     /// This function returns the allowed moves of the soldier
-    std::vector<std::string> getAllowedMoves(Board &, Position*);
+    void getAllowedMoves(Board &, Position*, std::vector<std::string> &);
 
     /// Returns all the moves of canons in the board consisting of that soldieer
-    std::vector<std::string> getAllowedCannonMoves(Board &, Position*);
+    void getAllowedCannonMoves(Board &, Position*, std::vector<std::string> &);
     /// This functions move the piece to the new position
     // void movePiece(Position);
     /// This function returns the type of piece

@@ -20,9 +20,9 @@ Soldier::Soldier(Colour colour) {
 PieceType Soldier::getType() {
     return PieceType::soldier;
 }
-// TODO: don't return vector
-vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position) {
-    vector<string> answer;
+
+void Soldier::getAllowedMoves(Board &currentBoard, Position* position, vector<string> &answer) {
+    // vector<string> answer;
     int x = position->x;
     int y = position->y;
     int blackWhiteFactor = this->colour == Colour::black ? 1 : -1;
@@ -105,16 +105,17 @@ vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position)
         }
     }
 
-    vector<string> cannonMoves = getAllowedCannonMoves(currentBoard, position);
+    vector<string> cannonMoves;
+    getAllowedCannonMoves(currentBoard, position, cannonMoves);
     answer.insert(answer.end(), cannonMoves.begin(), cannonMoves.end());
-    return answer;
+    // return answer;
 }
 
 
 /// This returns all the cannon moves in the current Board
-vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position){
+void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vector<string> &answer){
 
-  vector<string> answer;
+  // vector<string> answer;
   int x = position->x;
   int y = position->y;
 
@@ -132,12 +133,12 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
 
   if(isLeftMostOfHorizontalCannon){
     // First checking for movement of cannon
-    if((x + 3) < numCols && canMoveToPosition(currentBoard.cannonBoard[y][x+3])){
+    if((x + 3) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+3])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x, y, x + 3, y));
     }
 
-    if((x - 1) >= 0 && canMoveToPosition(currentBoard.cannonBoard[y][x-1])){
+    if((x - 1) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y][x-1])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x + 2, y, x - 1, y));
     }
@@ -168,12 +169,12 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
 
   if(isTopMostOfVerticalCannon){
     //First checking for movement of cannon
-    if((y + 3) < numRows && canMoveToPosition(currentBoard.cannonBoard[y+3][x])){
+    if((y + 3) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x, y, x, y + 3));
     }
 
-    if((y - 1) >= 0 && canMoveToPosition(currentBoard.cannonBoard[y-1][x])){
+    if((y - 1) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x, y + 2, x, y - 1));
     }
@@ -205,12 +206,12 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
 
   if(isTopLeftMostOfCannon){
     //First checking for movement of cannon
-    if((x + 3) < numCols && (y + 3) < numRows && canMoveToPosition(currentBoard.cannonBoard[y+3][x+3])){
+    if((x + 3) < numCols && (y + 3) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x+3])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x, y, x + 3, y + 3));
     }
 
-    if((x - 1) >= 0 && (y - 1) >= 0 && canMoveToPosition(currentBoard.cannonBoard[y-1][x-1])){
+    if((x - 1) >= 0 && (y - 1) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x-1])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x + 2, y + 2, x - 1, y - 1));
     }
@@ -241,12 +242,12 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
 
   if(isTopRightMostOfCannon){
     //First checking for movement of cannon
-    if((x - 3) >= 0 && (y + 3) < numRows && canMoveToPosition(currentBoard.cannonBoard[y+3][x-3])){
+    if((x - 3) >= 0 && (y + 3) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x-3])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x, y, x - 3, y + 3));
     }
 
-    if((x + 1) < numCols && (y - 1) >= 0 && canMoveToPosition(currentBoard.cannonBoard[y-1][x+1])){
+    if((x + 1) < numCols && (y - 1) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x+1])){
       // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M " + intToString(x + 3) + " " + intToString(y));
       answer.push_back(moveEncoding(x - 2, y + 2, x + 1, y - 1));
     }
@@ -275,7 +276,7 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
   }
 
 
-  return answer;
+  // return answer;
 
 
 }
@@ -283,7 +284,7 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
 bool Soldier::isOpponentSoldierPresent(Piece *ptr) {
   if(this->isOpponentPresent(ptr) && ptr->getType() == PieceType::soldier)
     return true;
-  return false;  
+  return false;
 }
 
 
@@ -317,7 +318,7 @@ string Soldier::moveEncoding(int initialPositionX, int initialPositionY, int fin
     return ("S " + intToString(initialPositionX) + " " + intToString(initialPositionY) + " M " + intToString(finalPositionX) + " " + intToString(finalPositionY));
 }
 
-string Soldier::cannonShotEncoding(int soldierPositionX, int soldierPositionY, int shotPositionX, int shotPositionY){ 
+string Soldier::cannonShotEncoding(int soldierPositionX, int soldierPositionY, int shotPositionX, int shotPositionY){
     // this solider is doing the cannonshot only
     return ("S " + intToString(soldierPositionX) + " " + intToString(soldierPositionY) + " B " + intToString(shotPositionX) + " " + intToString(shotPositionY));
 }
