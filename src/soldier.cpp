@@ -15,15 +15,13 @@ string intToString(int k) {
 
 Soldier::Soldier(Colour colour) {
     this->colour = colour;
-    // this->position = position;
 }
 
 PieceType Soldier::getType() {
     return PieceType::soldier;
 }
-
+// TODO: don't return vector
 vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position) {
-    // cout<< "Hi"<< endl;
     vector<string> answer;
     int x = position->x;
     int y = position->y;
@@ -37,7 +35,7 @@ vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position)
             // + intToString(x) + " " + intToString(y - blackWhiteFactor));
             answer.push_back(moveEncoding(x, y, x, y - blackWhiteFactor));
         }
-        if(this->isOpponentPresent(currentBoard.cannonBoard[y - blackWhiteFactor][x])) {
+        if(this->isOpponentSoldierPresent(currentBoard.cannonBoard[y - blackWhiteFactor][x])) {
                 canRetreat = true;
         }
         if(x < currentBoard.getColumns() - 1
@@ -45,7 +43,7 @@ vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position)
             // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M "
             // + intToString(x + 1) + " " + intToString(y - blackWhiteFactor));
             answer.push_back(moveEncoding(x, y, x + 1, y - blackWhiteFactor));
-            if(this->isOpponentPresent(currentBoard.cannonBoard[y - blackWhiteFactor][x + 1])) {
+            if(this->isOpponentSoldierPresent(currentBoard.cannonBoard[y - blackWhiteFactor][x + 1])) {
                 canRetreat = true;
             }
         }
@@ -53,7 +51,7 @@ vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position)
             // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M "
             // + intToString(x - 1) + " " + intToString(y - blackWhiteFactor));
             answer.push_back(moveEncoding(x, y, x - 1, y - blackWhiteFactor));
-            if(this->isOpponentPresent(currentBoard.cannonBoard[y - blackWhiteFactor][x - 1])) {
+            if(this->isOpponentSoldierPresent(currentBoard.cannonBoard[y - blackWhiteFactor][x - 1])) {
                 canRetreat = true;
             }
         }
@@ -66,7 +64,9 @@ vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position)
         // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M "
         // + intToString(x + 1) + " " + intToString(y));
         answer.push_back(moveEncoding(x, y, x + 1, y));
-        canRetreat = true;
+        if(currentBoard.cannonBoard[y][x + 1]->getType == PieceType::soldier) {
+          canRetreat = true;
+        }
     }
 
     // can move to the left
@@ -77,7 +77,9 @@ vector<string> Soldier::getAllowedMoves(Board &currentBoard, Position* position)
         // answer.push_back("S " + intToString(x) + " " + intToString(y) + " M "
         // + intToString(x - 1) + " " + intToString(y));
         answer.push_back(moveEncoding(x, y, x - 1, y));
-        canRetreat = true;
+        if(currentBoard.cannonBoard[y][x - 1]->getType() == PieceType::soldier) {
+          canRetreat = true;
+        }
     }
 
     // If the piece can retreat
@@ -278,6 +280,11 @@ vector<string> Soldier::getAllowedCannonMoves(Board &currentBoard, Position* pos
 
 }
 
+bool Soldier::isOpponentSoldierPresent(Piece *ptr) {
+  if(this->isOpponentPresent(ptr) && ptr->getType() == PieceType::soldier)
+    return true;
+  return false;  
+}
 
 
 /// This function tells if an opponent is present

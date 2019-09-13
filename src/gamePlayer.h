@@ -7,7 +7,7 @@ private:
    int ply;
 public:
     State *currentState;
-    GamePlayer(Colour, int = 4);
+    GamePlayer(Colour, int = 5, int = 8, int = 8);
     std::string play();
 };
 

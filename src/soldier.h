@@ -35,11 +35,12 @@ public:
 
     /// To check if no piece present at that position
     bool isPositionEmpty(Piece *);
-
     /// This function tells if an opponent is present
     bool isOpponentPresent(Piece *);
     /// This function tells if soldier can move to ptr
     bool canMoveToPosition(Piece *);
+    /// This is function to check if opponent soldier present
+    bool isOpponentSoldierPresent(Piece *);
 };
 
 #endif

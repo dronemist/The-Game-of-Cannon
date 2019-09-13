@@ -4,8 +4,8 @@
 using namespace std;
 
 // TODO: incorporate evaluation function in this
-GamePlayer::GamePlayer(Colour colour, int ply) {
-    this->currentState = new State(8, 8, colour);
+GamePlayer::GamePlayer(Colour colour, int ply, int row, int column) {
+    this->currentState = new State(row, column, colour);
     this->ply = ply;
 }
 
