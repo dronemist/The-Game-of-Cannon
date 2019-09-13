@@ -36,9 +36,9 @@ int main() {
             break;
         }
     }
-    Colour colour = id == 0 ? Colour::black : Colour::white;
+    Colour colour = id == 1 ? Colour::black : Colour::white;
     GamePlayer g1(colour, 5);
-    if(id == 0) {
+    if(id == 1) {
         move = g1.play();
         cout<<move<<endl;
     }
