@@ -1,12 +1,41 @@
 #include <iostream>
+#include <sstream>
 #include "gamePlayer.h"
 
 using namespace std;
 
 int main() {
     string move = "";
+    string input = "";
+    // Taking input
+    getline(cin, input);
     int id, rows, column, time;
-    cin>>id>>rows>>column>>time;
+    istringstream ss(input);
+    string token;
+    int count = 0;
+    while(ss>>token) {
+        switch (count)
+        {
+        case 0:
+            id = stoi(token);
+            count++;
+            break;
+        case 1:
+            rows = stoi(token);
+            count++;
+            break;
+        case 2:
+            column = stoi(token);
+            count++;
+            break;
+        case 3:
+            time = stoi(token);
+            count++;
+            break;
+        default:
+            break;
+        }
+    }
     Colour colour = id == 0 ? Colour::black : Colour::white;
     GamePlayer g1(colour, 5);
     if(id == 0) {
@@ -62,8 +91,8 @@ int main() {
     // int numMoves = 5;
     // cout<<"hi"<<endl;
     while(true) {
-        cin.ignore();
         getline(cin, move);
+        // cout<<move<<endl;
         // cout<<"g1 played "<<move<<endl;
         // g1.currentState->currentBoard.printBoard();
         // g2.currentState->makeMove(move, g2.currentState->currentBoard);
