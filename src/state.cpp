@@ -212,21 +212,21 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
 
                                     //Currently doing defence offence only
       if(isLeftMostOfHorizontalCannon){
-        defenceScoreLeftWing += parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y + 1) : (numRows - y));
+        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y + 1) : (numRows - y));
       }
 
       if(isTopMostOfVerticalCannon){
-        offenceScoreLeftWing += parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) : (y + 1));
+        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) : (y + 1));
       }
 
       if(isTopRightMostOfCannon){
-        defenceScoreLeftWing += parameters[1];
-        offenceScoreLeftWing += parameters[1];
+        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1];
+        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1];
       }
 
       if(isTopLeftMostOfCannon){
-        defenceScoreLeftWing += parameters[1];
-        offenceScoreLeftWing += parameters[1];
+        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1];
+        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1];
       }
       // if()
       // count += isLeftMostOfHorizontalCannon + isTopLeftMostOfCannon + isTopMostOfVerticalCannon + isTopRightMostOfCannon;
@@ -273,10 +273,10 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     // int blackOffenceScore = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite);
 
     if(blackTownhalls >= whiteTownhalls){
-      value = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 5 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 10 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+      value = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 1 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 10 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
     else{
-      value = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 5 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+      value = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
 
     if(colourOfPlayerToBeEvaluated == Colour::black)
