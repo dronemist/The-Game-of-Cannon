@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <ctime>
 #include "gamePlayer.h"
 
 using namespace std;
@@ -8,39 +9,45 @@ int main() {
     string move = "";
     string input = "";
     // Taking input
-    getline(cin, input);
+    // getline(cin, input);
+    clock_t begin = clock();
     int id, rows, column, time;
-    istringstream ss(input);
-    string token;
-    int count = 0;
-    while(ss>>token) {
-        switch (count)
-        {
-        case 0:
-            id = stoi(token);
-            count++;
-            break;
-        case 1:
-            rows = stoi(token);
-            count++;
-            break;
-        case 2:
-            column = stoi(token);
-            count++;
-            break;
-        case 3:
-            time = stoi(token);
-            count++;
-            break;
-        default:
-            break;
-        }
-    }
+    // istringstream ss(input);
+    // string token;
+    // int count = 0;
+    // while(ss>>token) {
+    //     switch (count)
+    //     {
+    //     case 0:
+    //         id = stoi(token);
+    //         count++;
+    //         break;
+    //     case 1:
+    //         rows = stoi(token);
+    //         count++;
+    //         break;
+    //     case 2:
+    //         column = stoi(token);
+    //         count++;
+    //         break;
+    //     case 3:
+    //         time = stoi(token);
+    //         count++;
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    // }
+    id = 1, rows = 8, column = 8, time = 90;
     Colour colour = id == 1 ? Colour::black : Colour::white;
-    GamePlayer g1(colour, 5);
+    GamePlayer g1(colour, 4);
     if(id == 1) {
         move = g1.play();
+        clock_t end = clock();
+        
         cout<<move<<endl;
+        double elapsed_secs = (end - begin) / CLOCKS_PER_SEC;
+        cout<<"time taken: "<<elapsed_secs<<endl;
     }
     // GamePlayer g2(Colour::white, 5);
 
@@ -90,19 +97,19 @@ int main() {
 
     // int numMoves = 5;
     // cout<<"hi"<<endl;
-    while(true) {
-        getline(cin, move);
-        // cout<<move<<endl;
-        // cout<<"g1 played "<<move<<endl;
-        // g1.currentState->currentBoard.printBoard();
-        // g2.currentState->makeMove(move, g2.currentState->currentBoard);
-        // move = g2.play();
-        g1.currentState->makeMove(move, g1.currentState->currentBoard);
-        move = g1.play();
+    // while(true) {
+    //     getline(cin, move);
+    //     // cout<<move<<endl;
+    //     // cout<<"g1 played "<<move<<endl;
+    //     // g1.currentState->currentBoard.printBoard();
+    //     // g2.currentState->makeMove(move, g2.currentState->currentBoard);
+    //     // move = g2.play();
+    //     g1.currentState->makeMove(move, g1.currentState->currentBoard);
+    //     move = g1.play();
         
-        cout<<move<<endl;
-        // cout<<"g2 played "<<move<<endl;
-        // g2.currentState->currentBoard.printBoard();
-    }
+    //     cout<<move<<endl;
+    //     // cout<<"g2 played "<<move<<endl;
+    //     // g2.currentState->currentBoard.printBoard();
+    // }
 
 }

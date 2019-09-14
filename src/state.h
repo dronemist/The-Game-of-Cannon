@@ -18,7 +18,11 @@ public:
     /// Colour of the player whose move it is;
     Colour colourOfCurrentPlayer;
     void removePositonFromBoard(Board &, int , int);
-    // value / evaluation of the state
+    /// value / evaluation of the state
     int getValue(Colour);
+    /// get string value of the state
+    // TODO: is it okay to return string
+    std::string getStringValue(/*std::string &*/);
+
 };
 #endif

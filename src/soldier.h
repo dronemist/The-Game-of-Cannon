@@ -6,6 +6,7 @@
 #include "position.h"
 #include "board.h"
 #include "piece.h"
+std::string intToString(int);
 class Soldier: public Piece
 {
 private:

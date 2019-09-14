@@ -13,4 +13,11 @@
 ///   - alpha
 ///   - beta
 int minimax(int, State *, bool, int, std::string &, int, int, Colour);
+
+/// This function performs iterative deepening minimax search
+/// - Parameters:
+///   - startState: the pointer to the current state
+///   - maxPly: the ply upto which search is to be performed
+///   - colour: the colour of current node
+void iterativeDeepening(State *startState, int maxPly, Colour colour);
 #endif

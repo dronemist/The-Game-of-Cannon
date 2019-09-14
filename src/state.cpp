@@ -2,6 +2,7 @@
 #include <sstream>
 #include <algorithm>
 #include "state.h"
+
 #define loop(i, start, end) for(int i = start; i < end; i++)
 
 using namespace std;
@@ -145,3 +146,44 @@ int State::getValue(Colour colour) {
         return -value;
     }
 }
+// TODO: should this be a pointer
+bool comparePosition(Position p1, Position p2) {
+    if(p2.y > p1.y)
+        return true;
+    else if(p2.y == p1.y) {
+        if(p2.x >= p1.x)
+            return true;
+        return false;    
+    } 
+    else {
+        return false;
+    }    
+}
+string State::getStringValue(/*string &answer*/) {
+    string answer = "";
+    // adding black soldiers
+    vector<Position> allPiecePosition = this->currentBoard.positionsOfSoldiersOnBoard[0];
+    // adding white soldiers
+    allPiecePosition.insert(allPiecePosition.end(), this->currentBoard.positionsOfSoldiersOnBoard[1].begin(), this->currentBoard.positionsOfSoldiersOnBoard[1].end());
+    // adding white townhalls
+    for(int j = 0; j < this->currentBoard.getColumns(); j += 2) {
+        if(this->currentBoard.cannonBoard[0][j] != nullptr &&
+        this->currentBoard.cannonBoard[0][j]->getType() == PieceType::townhall){
+            allPiecePosition.push_back(Position(j, 0));
+        }
+    }
+    int rows = this->currentBoard.getRows();
+    // adding black townhalls
+    for(int j = 1; j < this->currentBoard.getColumns(); j += 2) {
+        if(this->currentBoard.cannonBoard[rows - 1][j] != nullptr &&
+        this->currentBoard.cannonBoard[rows - 1][j]->getType() == PieceType::townhall){
+            allPiecePosition.push_back(Position(j, rows - 1));
+        }
+    }
+    sort(allPiecePosition.begin(), allPiecePosition.end(), comparePosition);
+    loop(i, 0, allPiecePosition.size()) {
+        answer += intToString(allPiecePosition[i].x);
+        answer += intToString(allPiecePosition[i].y);
+    }
+    return answer;
+}  
