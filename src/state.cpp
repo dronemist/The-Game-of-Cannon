@@ -128,7 +128,7 @@ void State::makeMove(string move, Board &newBoard) {
 
 }
 
-int State::getValue(Colour colour) {
+int State::getValue(Colour colourOfPlayerToBeEvaluated) {
     int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
     int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
     int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
@@ -136,9 +136,12 @@ int State::getValue(Colour colour) {
     int blackCannons = this->currentBoard.numberOfCannonsOnBoard(this->currentBoard.positionsOfSoldiersOnBoard, 0);
     int whiteCannons = this->currentBoard.numberOfCannonsOnBoard(this->currentBoard.positionsOfSoldiersOnBoard, 1);
 
+    int defenceScore;
+    int offenceScore;
+
     int value = (blackSoldiers - whiteSoldiers) + 50 * (blackTownhalls - whiteTownhalls) + 10 * (blackCannons - whiteCannons);
 
-    if(colour == Colour::black)
+    if(colourOfPlayerToBeEvaluated == Colour::black)
         return value;
     else
     {

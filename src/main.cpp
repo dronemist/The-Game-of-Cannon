@@ -99,7 +99,7 @@ int main() {
         // move = g2.play();
         g1.currentState->makeMove(move, g1.currentState->currentBoard);
         move = g1.play();
-        
+
         cout<<move<<endl;
         // cout<<"g2 played "<<move<<endl;
         // g2.currentState->currentBoard.printBoard();
