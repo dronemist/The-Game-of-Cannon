@@ -46,7 +46,7 @@ int main() {
         clock_t end = clock();
         
         cout<<move<<endl;
-        double elapsed_secs = (end - begin) / CLOCKS_PER_SEC;
+        double elapsed_secs = (end - begin);
         cout<<"time taken: "<<elapsed_secs<<endl;
     }
     // GamePlayer g2(Colour::white, 5);

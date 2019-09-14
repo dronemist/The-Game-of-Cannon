@@ -31,11 +31,11 @@ struct myComp {
   }
   bool operator() (State* state_1, State* state_2) {
     if(isMax) {
-        // return cache[state_1->getStringValue()] > cache[state_2->getStringValue()];
-        return state_1->getValue(this->colour) > state_2->getValue(this->colour);
+        return cache[state_1->getStringValue()] > cache[state_2->getStringValue()];
+        // return state_1->getValue(this->colour) > state_2->getValue(this->colour);
     } else {  
-        // return cache[state_1->getStringValue()] < cache[state_2->getStringValue()];
-        return state_1->getValue(this->colour) < state_2->getValue(this->colour);
+        return cache[state_1->getStringValue()] < cache[state_2->getStringValue()];
+        // return state_1->getValue(this->colour) < state_2->getValue(this->colour);
     }
   }
 };
@@ -58,7 +58,8 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
     }
     myComp myCompInstance = myComp(colour, isMax);
     // Sorts states in ascending order
-    sort(nextStates.begin(), nextStates.end(), myCompInstance);
+    // if(currentDepth != ply - 1)
+    //     sort(nextStates.begin(), nextStates.end(), myCompInstance);
     if(isMax) {
         int best = INT32_MIN;
         loop(i, 0, nextStates.size()) {
@@ -66,7 +67,7 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
             int minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour);
             alpha = max(alpha, minVal);
             if(alpha >= beta) {
-                cout<<::count++<<" ";
+                ::count += currentDepth;
                 delete nextStates[i];
                 cache[currentStringValue] = minVal;
                 return minVal;
@@ -90,7 +91,7 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
             delete nextStates[i];
             beta = min(beta, maxVal);
             if(alpha >= beta) {
-                cout<<::count++<<" ";
+                ::count += currentDepth;
                 cache[currentStringValue] = maxVal;
                 return maxVal;
             }
@@ -107,5 +108,6 @@ void iterativeDeepening(State *startState, int maxPly, Colour colour) {
     loop(i, 1, 5) {
         minimax(0, startState, true, i, optimalMove, INT32_MIN, INT32_MAX, colour);
     }
+    cout<<::count;
     cout<<endl<<optimalMove<<endl;  
 }
