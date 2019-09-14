@@ -150,7 +150,7 @@ void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vec
 
     //Further shot in right direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((x + 5) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+5]) && canMoveToPosition(currentBoard.cannonBoard[y][x+5])){
+    if((x + 5) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y][x+5])){
       answer.push_back(cannonShotEncoding(x, y, x + 5, y));
     }
 
