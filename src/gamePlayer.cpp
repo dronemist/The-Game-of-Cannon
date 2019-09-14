@@ -11,7 +11,7 @@ GamePlayer::GamePlayer(Colour colour, int ply, int row, int column) {
 
 string GamePlayer::play() {
     string optimalMove = "";
-    int val = minimax(1, this->currentState, true, this->ply, optimalMove, INT32_MIN, INT32_MAX, this->currentState->colourOfCurrentPlayer);
+    int val = minimax(0, this->currentState, true, this->ply, optimalMove, INT32_MIN, INT32_MAX, this->currentState->colourOfCurrentPlayer);
 
     // changing board of current state
     this->currentState->makeMove(optimalMove, this->currentState->currentBoard);

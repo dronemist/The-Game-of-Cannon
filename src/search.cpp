@@ -18,13 +18,19 @@ using namespace std;
 //   return state_1->getValue(colour) > state_2->getValue(colour);
 // }
 
-struct myComp{
+struct myComp {
   Colour colour;
-  myComp(Colour initialColour){
+  bool isMax;
+  myComp(Colour initialColour, bool isMax){
     colour = initialColour;
+    this->isMax = isMax;
   }
   bool operator() (State* state_1, State* state_2){
-    return state_1->getValue(colour) < state_2->getValue(colour);
+      if(this->isMax) {
+        return state_1->getValue(colour) > state_2->getValue(colour);
+      } else {
+        return state_1->getValue(colour) < state_2->getValue(colour);
+      }
   }
 };
 
@@ -41,13 +47,10 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
       return currentState->getValue(colour);
     }
 
-    myComp myCompInstance = myComp(colour);
-    // Sorts states in ascending order
-    sort(nextStates.begin(), nextStates.end(), myCompInstance);
-    if(isMax){
-        // NOTE: Check if we have to reverse for Max or Min
-        reverse(nextStates.begin(), nextStates.end());
-    }
+    myComp myCompInstance = myComp(colour, isMax);
+    // Sorts states in ascending and descending order
+    if(currentDepth + 1 != ply)
+        sort(nextStates.begin(), nextStates.end(), myCompInstance);
 
 
     // if(currentDepth == 1){
@@ -65,7 +68,7 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
                 delete nextStates[i];
                 return minVal;
             }
-            if(minVal > best && currentDepth == 1) {
+            if(minVal > best && currentDepth == 0) {
                 best = minVal;
                 optimalMove = nextStates[i]->moveFromPreviousState;
             } else {
