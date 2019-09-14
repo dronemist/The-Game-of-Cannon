@@ -18,7 +18,12 @@ public:
     /// Colour of the player whose move it is;
     Colour colourOfCurrentPlayer;
     void removePositonFromBoard(Board &, int , int);
+
+    ///Calculates defence and offence score parameters
+    void calculateStateScoreParameters(int, int*, int*,
+                                      int*, int*,
+                                      int*, int*, std::vector<int> &);
     // value / evaluation of the state
-    int getValue(Colour);
+    int getValue(Colour, Colour);
 };
 #endif

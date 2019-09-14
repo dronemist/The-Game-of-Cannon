@@ -19,35 +19,41 @@ using namespace std;
 // }
 
 struct myComp {
-  Colour colour;
+  // Colour colour;
+  Colour colourOfPlayerToBeEvaluated;
+  Colour colourOfMovingPlayer;
   bool isMax;
-  myComp(Colour initialColour, bool isMax){
-    colour = initialColour;
+  myComp(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPlayer, bool isMax){
+    this->colourOfPlayerToBeEvaluated = colourOfPlayerToBeEvaluated;
+    this->colourOfMovingPlayer = colourOfMovingPlayer;
     this->isMax = isMax;
   }
   bool operator() (State* state_1, State* state_2){
       if(this->isMax) {
-        return state_1->getValue(colour) > state_2->getValue(colour);
+        return state_1->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer) > state_2->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer);
       } else {
-        return state_1->getValue(colour) < state_2->getValue(colour);
+        return state_1->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer) < state_2->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer);
       }
   }
 };
 
 int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, int alpha, int beta, Colour colour) {
 
+    Colour oppositeOfColour = (colour == Colour::black) ? Colour::white : Colour::black;
+    Colour colourOfMovingPlayer = (currentDepth % 2 == 0) ? colour : oppositeOfColour;
+
     if(currentDepth == ply) {
-        return currentState->getValue(colour);
+        return currentState->getValue(colour, colourOfMovingPlayer);
         // NOTE: What if ply = 1?
     }
 
     vector<State*> nextStates;
     currentState->expand(nextStates);
     if (nextStates.size() == 0) {
-      return currentState->getValue(colour);
+      return currentState->getValue(colour, colourOfMovingPlayer);
     }
 
-    myComp myCompInstance = myComp(colour, isMax);
+    myComp myCompInstance = myComp(colour, colourOfMovingPlayer, isMax);
     // Sorts states in ascending and descending order
     if(currentDepth + 1 != ply)
         sort(nextStates.begin(), nextStates.end(), myCompInstance);
