@@ -5,7 +5,7 @@ CXX = g++ -std=c++11
 CXXFLAGS = -Wall -g
 
 # Executable name
-OUT = main
+OUT = main2
 
 all: $(OUT)
 

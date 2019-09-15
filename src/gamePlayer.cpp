@@ -27,9 +27,9 @@ string GamePlayer::play() {
     //         optimalMove = "S 4 7 M 5 6";
     //     this->temp--;
     // } 
-    // else {
+    else {
         int val = minimax(0, this->currentState, true, this->ply, optimalMove, INT32_MIN, INT32_MAX, this->currentState->colourOfCurrentPlayer);
-    // }
+    }
     // changing board of current state
     this->currentState->makeMove(optimalMove, this->currentState->currentBoard);
     // cout<<val<<endl;
