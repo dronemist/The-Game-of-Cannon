@@ -198,10 +198,10 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
       int x = it-> x;
       int y = it-> y;
 
-      *defenceScoreLeftWing = (*defenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x < numRows/2);
-      *offenceScoreLeftWing = (*offenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x < numRows/2);
-      *defenceScoreRightWing = (*defenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x >= numRows/2);
-      *offenceScoreRightWing = (*offenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x >= numRows/2);
+      *defenceScoreLeftWing = (*defenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x < numCols/2);
+      *offenceScoreLeftWing = (*offenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x < numCols/2);
+      *defenceScoreRightWing = (*defenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x >= numCols/2);
+      *offenceScoreRightWing = (*offenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x >= numCols/2);
   }
 
 
@@ -226,13 +226,13 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
 
                                     //Currently doing defence offence only
       if(isLeftMostOfHorizontalCannon){
-        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x > numCols/2 + 1);
-        *defenceScoreRightWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x <= numCols/2 + 1);
+        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 >= numCols/2 + 1);
+        *defenceScoreRightWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 < numCols/2 + 1);
       }
 
       if(isTopMostOfVerticalCannon){
-        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2 ) : (y + 1) * (1 + x%2)) * (x < numRows/2);
-        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x%2)) * (x >= numRows/2);
+        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2 ) : (y + 1) * (1 + x%2)) * (x < numCols/2);
+        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x%2)) * (x >= numCols/2);
       }
 
       if(isTopRightMostOfCannon){
@@ -295,12 +295,15 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
 
     if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
 
-      value = 1000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * temp;
+      value = 10000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * temp;
     }
     else {
-      value = 1000 * (blackTownhalls - whiteTownhalls) + 1 * (temp) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+      value = 10000 * (blackTownhalls - whiteTownhalls) + 1 * (temp) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
-    if(whiteTownhalls == 2) {
+    // TODO: check this if loop
+    if(whiteTownhalls == 2 && colourOfPlayerToBeEvaluated == Colour::black) {
+        value = 1000000;
+    } else if(blackTownhalls == 2 && colourOfPlayerToBeEvaluated == Colour::white) {
         value = 1000000;
     }
     if(colourOfPlayerToBeEvaluated == Colour::black)
