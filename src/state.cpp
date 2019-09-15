@@ -200,7 +200,7 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
 
       *defenceScoreLeftWing = (*defenceScoreLeftWing) + (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1));
       *offenceScoreLeftWing = (*offenceScoreLeftWing) + (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y));
-  }
+    }
 
 
 
@@ -264,7 +264,7 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     int defenceScoreCenterBlack = 0;
     int offenceScoreCenterBlack = 0;
 
-    vector<int> parameters = {1, 1, 2};
+    vector<int> parameters = {1, 1, 1};
 
     this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
                                                                             &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack,
@@ -284,13 +284,15 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     int value;
     // int blackOffenceScore = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite);
 
-    if(blackTownhalls >= whiteTownhalls){
-      value = (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+    if(blackTownhalls > whiteTownhalls || (colourOfPlayerToBeEvaluated == Colour::black && blackTownhalls == whiteTownhalls)){
+      value = 1 * (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
-    else{
-      value = (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 1 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+    else {
+      value = 1 * (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 1 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
-
+    if(whiteTownhalls == 2) {
+        value = INT32_MAX;
+    }
     if(colourOfPlayerToBeEvaluated == Colour::black)
         return value;
     else
