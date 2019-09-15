@@ -1,5 +1,6 @@
 #include <iostream>
-#include<algorithm>
+#include <algorithm>
+#include <fstream>
 #include "search.h"
 #define loop(i, start, end) for(int i = start; i < end; i++)
 
@@ -41,7 +42,9 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
 
     Colour oppositeOfColour = (colour == Colour::black) ? Colour::white : Colour::black;
     Colour colourOfMovingPlayer = (currentDepth % 2 == 0) ? colour : oppositeOfColour;
-
+    ofstream fout;
+    fout.open("debug.txt", ios_base::app);
+    
     if(currentDepth == ply) {
         return currentState->getValue(colour, colourOfMovingPlayer);
         // NOTE: What if ply = 1?
@@ -52,7 +55,7 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
     if (nextStates.size() == 0) {
       return currentState->getValue(colour, colourOfMovingPlayer);
     }
-
+    
     myComp myCompInstance = myComp(colour, colourOfMovingPlayer, isMax);
     // Sorts states in ascending and descending order
     if(currentDepth + 1 != ply)
@@ -77,6 +80,7 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
             if(minVal > best && currentDepth == 0) {
                 best = minVal;
                 optimalMove = nextStates[i]->moveFromPreviousState;
+                fout<<"Move 1: "<<optimalMove<<endl;
             } else {
                 best = max(best, minVal);
             }

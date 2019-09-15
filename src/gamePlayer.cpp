@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "gamePlayer.h"
 
 using namespace std;
@@ -30,8 +31,12 @@ string GamePlayer::play() {
     else {
         int val = minimax(0, this->currentState, true, this->ply, optimalMove, INT32_MIN, INT32_MAX, this->currentState->colourOfCurrentPlayer);
     }
+    // ofstream fout;
+    // fout.open("debug.txt", ios_base::app);
+    // fout<<"Move: "<<optimalMove<<endl;
     // changing board of current state
     this->currentState->makeMove(optimalMove, this->currentState->currentBoard);
+    
     // cout<<val<<endl;
     return optimalMove;
 }

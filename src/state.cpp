@@ -291,7 +291,7 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
       value = 1 * (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 1 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
     if(whiteTownhalls == 2) {
-        value = INT32_MAX;
+        value = 100000;
     }
     if(colourOfPlayerToBeEvaluated == Colour::black)
         return value;
