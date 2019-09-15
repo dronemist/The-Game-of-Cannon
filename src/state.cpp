@@ -192,6 +192,18 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
     int numCols = board->getColumns();
     int count = 0;
 
+    //Calculating the score because of soldiers
+    for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it){
+
+      int x = it-> x;
+      int y = it-> y;
+
+      *defenceScoreLeftWing = (*defenceScoreLeftWing) + (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1));
+      *offenceScoreLeftWing = (*offenceScoreLeftWing) + (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y));
+  }
+
+
+
     //Calculating the score because of cannons
     for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it){
 
@@ -252,7 +264,7 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     int defenceScoreCenterBlack = 0;
     int offenceScoreCenterBlack = 0;
 
-    vector<int> parameters = {10, 5, 10};
+    vector<int> parameters = {1, 1, 2};
 
     this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
                                                                             &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack,
@@ -273,10 +285,10 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     // int blackOffenceScore = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite);
 
     if(blackTownhalls >= whiteTownhalls){
-      value = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 1 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 10 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+      value = (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
     else{
-      value = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+      value = (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 1 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
 
     if(colourOfPlayerToBeEvaluated == Colour::black)
