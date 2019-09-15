@@ -198,8 +198,10 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
       int x = it-> x;
       int y = it-> y;
 
-      *defenceScoreLeftWing = (*defenceScoreLeftWing) + (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1));
-      *offenceScoreLeftWing = (*offenceScoreLeftWing) + (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y));
+      *defenceScoreLeftWing = (*defenceScoreLeftWing) + 10*(colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x < numRows/2);
+      *offenceScoreLeftWing = (*offenceScoreLeftWing) + 10*(colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x < numRows/2);
+      *defenceScoreRightWing = (*defenceScoreRightWing) + 10*(colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x >= numRows/2);
+      *offenceScoreRightWing = (*offenceScoreRightWing) + 10*(colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x >= numRows/2);
   }
 
 
@@ -224,21 +226,27 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
 
                                     //Currently doing defence offence only
       if(isLeftMostOfHorizontalCannon){
-        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y + 1) : (numRows - y));
+        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) + parameters[0] * x;
+        *defenceScoreRightWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) + parameters[0] * (numRows - x - 1);
       }
 
       if(isTopMostOfVerticalCannon){
-        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) : (y + 1));
+        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2 ) : (y + 1) * (1 + x%2)) * (x < numRows/2);
+        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x%2)) * (x >= numRows/2);
       }
 
       if(isTopRightMostOfCannon){
         *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1];
         *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1];
+        *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1];
+        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1];
       }
 
       if(isTopLeftMostOfCannon){
         *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1];
         *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1];
+        *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1];
+        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1];
       }
       // if()
       // count += isLeftMostOfHorizontalCannon + isTopLeftMostOfCannon + isTopMostOfVerticalCannon + isTopRightMostOfCannon;
@@ -264,8 +272,7 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     int defenceScoreCenterBlack = 0;
     int offenceScoreCenterBlack = 0;
 
-    vector<int> parameters = {1, 1, 2};
-
+    vector<int> parameters = {1, 25, 5};
     this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
                                                                             &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack,
                                                                             &defenceScoreCenterBlack, &offenceScoreCenterBlack, parameters);
@@ -283,12 +290,15 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
 
     int value;
     // int blackOffenceScore = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite);
+    int temp = max(offenceScoreLeftWingBlack + defenceScoreLeftWingWhite - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite, defenceScoreRightWingBlack + offenceScoreRightWingBlack - offenceScoreRightWingWhite - defenceScoreRightWingWhite);
+    temp = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite + defenceScoreRightWingBlack + offenceScoreRightWingBlack - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
 
-    if(blackTownhalls >= whiteTownhalls){
-      value = (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+    if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
+
+      value = 10000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * temp;
     }
     else{
-      value = (blackSoldiers - whiteSoldiers) + 1000 * (blackTownhalls - whiteTownhalls) + 1 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+      value = 10000 * (blackTownhalls - whiteTownhalls) + 1 * (temp) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
 
     if(colourOfPlayerToBeEvaluated == Colour::black)
