@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 /// This function does minimax search and returns the best possible move at current level
 /// - Parameters:
 ///   - currentDepth: the depth of the current node
@@ -44,8 +45,10 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
 
     if(currentDepth == ply) {
         return currentState->getValue(colour, colourOfMovingPlayer);
-        // NOTE: What if ply = 1?
     }
+    // Don't consider moves if townhall limit reached
+    bool gameOver = (colour == Colour::black && currentState->currentBoard.numberOfWhiteTownhalls() == 2)
+    || (colour == Colour::white && currentState->currentBoard.numberOfBlackTownhalls() == 2);
 
     vector<State*> nextStates;
     currentState->expand(nextStates);
@@ -58,12 +61,6 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
     if(currentDepth + 1 != ply)
         sort(nextStates.begin(), nextStates.end(), myCompInstance);
 
-
-    // if(currentDepth == 1){
-    //   loop(i, 0, nextStates.size()){
-    //     cout<<nextStates[i]->moveFromPreviousState<<endl;
-    //   }
-    // }
     if(isMax) {
         int best = INT32_MIN;
         loop(i, 0, nextStates.size()) {
