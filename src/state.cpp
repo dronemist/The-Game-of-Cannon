@@ -199,9 +199,9 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
       int y = it-> y;
 
       *defenceScoreLeftWing = (*defenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x < numCols/2);
-      *offenceScoreLeftWing = (*offenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x < numCols/2);
+      *offenceScoreLeftWing = (*offenceScoreLeftWing) + 3 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x < numCols/2);
       *defenceScoreRightWing = (*defenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x >= numCols/2);
-      *offenceScoreRightWing = (*offenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x >= numCols/2);
+      *offenceScoreRightWing = (*offenceScoreRightWing) + 3 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x >= numCols/2);
   }
 
 
