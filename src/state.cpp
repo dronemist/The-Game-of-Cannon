@@ -224,14 +224,14 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
 
       bool isTopLeftMostOfCannon = ((x+2) < numCols) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x+1], colourOfPlayerToBeEvaluated)
                                     && isAllySoldierPresent(board->cannonBoard[y+2][x+2], colourOfPlayerToBeEvaluated)
-                                    ;//&& (!((y + 3) < numRows && (x + 3) < numCols) || !(isAllySoldierPresent(board->cannonBoard[y+3][x+3], colourOfPlayerToBeEvaluated)));
+                                    && (!((y + 3) < numRows && (x + 3) < numCols) || !(isAllySoldierPresent(board->cannonBoard[y+3][x+3], colourOfPlayerToBeEvaluated)));
 
       bool isTopMostOfVerticalCannon = ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x], colourOfPlayerToBeEvaluated)
                                        && isAllySoldierPresent(board->cannonBoard[y+2][x], colourOfPlayerToBeEvaluated)
                                         && (!((y + 3) < numRows) || !(isAllySoldierPresent(board->cannonBoard[y+3][x], colourOfPlayerToBeEvaluated)));
       bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x-1], colourOfPlayerToBeEvaluated)
                                     && isAllySoldierPresent(board->cannonBoard[y + 2][x - 2], colourOfPlayerToBeEvaluated)
-                                    ;//&& (!((y + 3) < numRows && (x - 3) >= 0) || !(isAllySoldierPresent(board->cannonBoard[y+3][x-3], colourOfPlayerToBeEvaluated)));
+                                    && (!((y + 3) < numRows && (x - 3) >= 0) || !(isAllySoldierPresent(board->cannonBoard[y+3][x-3], colourOfPlayerToBeEvaluated)));
 
                                     //Currently doing defence offence only
       if(isLeftMostOfHorizontalCannon){
@@ -246,18 +246,26 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
         *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x%2)) * (x >= numCols/2);
       }
 
-      if(isTopRightMostOfCannon){
-        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1]; //* ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 2) ;
-        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1];
-        *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1];
-        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1]; //* ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 2);
+      if(isTopRightMostOfCannon) {
+        if(colourOfPlayerToBeEvaluated == int(Colour::black)) {  
+          // *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1) ;
+          *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
+        }
+        else {
+          *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
+          // *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1]* ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
+        }
       }
 
-      if(isTopLeftMostOfCannon){
-        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1];
-        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1]; //* (numRows - 1 - abs(x - y) - 2);
-        *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1]; //* (numRows - 1 - abs(x - y) - 2);
-        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1];
+      if(isTopLeftMostOfCannon) {
+        if(colourOfPlayerToBeEvaluated == int(Colour::black)) {
+          *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+          // *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+        }
+        else {
+          // *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+          *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+        }
       }
       // if()
       // count += isLeftMostOfHorizontalCannon + isTopLeftMostOfCannon + isTopMostOfVerticalCannon + isTopRightMostOfCannon;
@@ -292,7 +300,7 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     // else if(numberOfSelfSoldiers < 6)
     //   parameters = {1, 1, 1};
     // else 
-    parameters = {1, numberOfSelfSoldiers/4, numberOfSelfSoldiers/4};
+    parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
     this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
                                                                             &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack,
                                                                             &defenceScoreCenterBlack, &offenceScoreCenterBlack, &blackMobility, parameters);
