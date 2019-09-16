@@ -49,7 +49,9 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
     // Don't consider moves if townhall limit reached
     bool gameOver = (colour == Colour::black && currentState->currentBoard.numberOfWhiteTownhalls() == 2)
     || (colour == Colour::white && currentState->currentBoard.numberOfBlackTownhalls() == 2);
-
+    if(gameOver) {
+        return currentState->getValue(colour, colourOfMovingPlayer);
+    }
     vector<State*> nextStates;
     currentState->expand(nextStates);
     if (nextStates.size() == 0) {

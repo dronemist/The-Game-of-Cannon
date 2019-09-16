@@ -22,7 +22,7 @@ public:
     ///Calculates defence and offence score parameters
     void calculateStateScoreParameters(int, int*, int*,
                                       int*, int*,
-                                      int*, int*, std::vector<int> &);
+                                      int*, int*, int*, std::vector<int> &);
     // value / evaluation of the state
     int getValue(Colour, Colour);
 };
