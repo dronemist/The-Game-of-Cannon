@@ -291,7 +291,7 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     int value;
     // int blackOffenceScore = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite);
     int temp = max(offenceScoreLeftWingBlack + defenceScoreLeftWingWhite - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite, defenceScoreRightWingBlack + offenceScoreRightWingBlack - offenceScoreRightWingWhite - defenceScoreRightWingWhite);
-    temp = max(temp, offenceScoreLeftWingBlack + defenceScoreLeftWingBlack - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite + defenceScoreRightWingBlack + offenceScoreRightWingBlack - offenceScoreRightWingWhite - defenceScoreRightWingWhite);
+    temp = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite + defenceScoreRightWingBlack + offenceScoreRightWingBlack - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
 
     if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
 
