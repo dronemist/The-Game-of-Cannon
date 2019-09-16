@@ -1,1 +1,1 @@
-../src/main3
+../main
