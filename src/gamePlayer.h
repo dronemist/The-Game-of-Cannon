@@ -4,9 +4,9 @@
 class GamePlayer
 {
 private:
-   int ply;
 public:
     State *currentState;
+    int ply;
     GamePlayer(Colour, int = 4, int = 8, int = 8);
     std::string play();
 };

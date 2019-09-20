@@ -112,35 +112,35 @@ int Board::numberOfWhiteTownhalls(){
   return count;
 }
 
-bool isAllySoldierPresent(Piece* ptr, int soldierColor){
-  if(ptr != nullptr && int(ptr->getColour()) == soldierColor && ptr->getType() == PieceType::soldier)
-    return true;
-  return false;
-}
-
-
-int Board::numberOfCannonsOnBoard(vector< vector<Position> > &positionsOfSoldiersOnBoard, int pieceColour){  // Piece color 0 for black, 1 for white
-
-  int numRows = this->getRows();
-  int numCols = this->getColumns();
-  int count = 0;
-
-
-
-  for(vector<Position>::iterator it = positionsOfSoldiersOnBoard[pieceColour].begin(); it != positionsOfSoldiersOnBoard[pieceColour].end(); ++it){
-
-    int x = it-> x;
-    int y = it-> y;
-
-    bool isLeftMostOfHorizontalCannon = ((x + 2) < numCols) && isAllySoldierPresent(this->cannonBoard[y][x+1], pieceColour) && isAllySoldierPresent(this->cannonBoard[y][x+2], pieceColour);
-    bool isTopLeftMostOfCannon = ((x+2) < numCols) && ((y+2) < numRows) && isAllySoldierPresent(this->cannonBoard[y+1][x+1], pieceColour) && isAllySoldierPresent(this->cannonBoard[y+2][x+2], pieceColour);
-    bool isTopMostOfVerticalCannon = ((y+2) < numRows) && isAllySoldierPresent(this->cannonBoard[y+1][x], pieceColour) && isAllySoldierPresent(this->cannonBoard[y+2][x], pieceColour);
-    bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(this->cannonBoard[y+1][x-1], pieceColour) && isAllySoldierPresent(this->cannonBoard[y + 2][x - 2], pieceColour);
-
-    count += isLeftMostOfHorizontalCannon + isTopLeftMostOfCannon + isTopMostOfVerticalCannon + isTopRightMostOfCannon;
-
-  }
-
-  return count;
-
-}
+// bool isAllySoldierPresent(Piece* ptr, int soldierColor){
+//   if(ptr != nullptr && int(ptr->getColour()) == soldierColor && ptr->getType() == PieceType::soldier)
+//     return true;
+//   return false;
+// }
+//
+//
+// int Board::numberOfCannonsOnBoard(vector< vector<Position> > &positionsOfSoldiersOnBoard, int pieceColour){  // Piece color 0 for black, 1 for white
+//
+//   int numRows = this->getRows();
+//   int numCols = this->getColumns();
+//   int count = 0;
+//
+//
+//
+//   for(vector<Position>::iterator it = positionsOfSoldiersOnBoard[pieceColour].begin(); it != positionsOfSoldiersOnBoard[pieceColour].end(); ++it){
+//
+//     int x = it-> x;
+//     int y = it-> y;
+//
+//     bool isLeftMostOfHorizontalCannon = ((x + 2) < numCols) && isAllySoldierPresent(this->cannonBoard[y][x+1], pieceColour) && isAllySoldierPresent(this->cannonBoard[y][x+2], pieceColour);
+//     bool isTopLeftMostOfCannon = ((x+2) < numCols) && ((y+2) < numRows) && isAllySoldierPresent(this->cannonBoard[y+1][x+1], pieceColour) && isAllySoldierPresent(this->cannonBoard[y+2][x+2], pieceColour);
+//     bool isTopMostOfVerticalCannon = ((y+2) < numRows) && isAllySoldierPresent(this->cannonBoard[y+1][x], pieceColour) && isAllySoldierPresent(this->cannonBoard[y+2][x], pieceColour);
+//     bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(this->cannonBoard[y+1][x-1], pieceColour) && isAllySoldierPresent(this->cannonBoard[y + 2][x - 2], pieceColour);
+//
+//     count += isLeftMostOfHorizontalCannon + isTopLeftMostOfCannon + isTopMostOfVerticalCannon + isTopRightMostOfCannon;
+//
+//   }
+//
+//   return count;
+//
+// }
