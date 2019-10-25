@@ -6,15 +6,9 @@
 #include "townhall.h"
 class Piece;
 
-// struct boardPieceAndItsPositionInList{
-//   Piece* piece;
-//   list<Position>::iterator it;
-// };
-
 class Board
 {
 private:
-    // DOUBT: in board will all three position point to cannon?
     /// Number of rows
     int rows;
     /// Number of columns

@@ -2,7 +2,6 @@
 #define PIECE_H
 #include <vector>
 #include <string>
-// DOUBT: Should we add it to the same file?
 #include "position.h"
 #include "board.h"
 class Board;

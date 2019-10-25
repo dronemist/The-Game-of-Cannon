@@ -136,52 +136,6 @@ bool isAllySoldierPresent(Piece* ptr, int soldierColor){
   return false;
 }
 
-
-// int State::scoreOfSoldiersOnBoard(){
-//
-//
-// }
-//
-// int State::scoreOfCannonsOnBoard(int colourOfPlayerToBeEvaluated){  // Piece color 0 for black, 1 for white
-//
-//   Board* board = this->currentBoard;
-//   vector< vector<Position> >* positionsOfSoldiersOnBoard = &(board->positionsOfSoldiersOnBoard);
-//
-//   int numRows = board->getRows();
-//   int numCols = board->getColumns();
-//   int count = 0;
-//
-//
-//
-//   for(vector<Position>::iterator it = positionsOfSoldiersOnBoard[colourOfPlayerToBeEvaluated].begin(); it != positionsOfSoldiersOnBoard[colourOfPlayerToBeEvaluated].end(); ++it){
-//
-//     int x = it-> x;
-//     int y = it-> y;
-//
-//     bool isLeftMostOfHorizontalCannon = ((x + 2) < numCols) && isAllySoldierPresent(board->cannonBoard[y][x+1], colourOfPlayerToBeEvaluated)
-//                                         && isAllySoldierPresent(board->cannonBoard[y][x+2], colourOfPlayerToBeEvaluated);
-//
-//     bool isTopLeftMostOfCannon = ((x+2) < numCols) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x+1], colourOfPlayerToBeEvaluated)
-//                                   && isAllySoldierPresent(board->cannonBoard[y+2][x+2], colourOfPlayerToBeEvaluated);
-//
-//     bool isTopMostOfVerticalCannon = ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x], colourOfPlayerToBeEvaluated)
-//                                      && isAllySoldierPresent(board->cannonBoard[y+2][x], colourOfPlayerToBeEvaluated);
-//
-//     bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x-1], colourOfPlayerToBeEvaluated)
-//                                   && isAllySoldierPresent(board->cannonBoard[y + 2][x - 2], colourOfPlayerToBeEvaluated);
-//
-//     if(isLeftMostOfHorizontalCannon){
-//
-//     }
-//
-//     count += isLeftMostOfHorizontalCannon + isTopLeftMostOfCannon + isTopMostOfVerticalCannon + isTopRightMostOfCannon;
-//
-//   }
-//
-//   return count;
-//
-// }
-
 void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* defenceScoreRightWing, int* offenceScoreRightWing,
                                         int* defenceScoreLeftWing, int* offenceScoreLeftWing,
                                         int* defenceScoreCenter, int* offenceScoreCenter, int* mobility, vector<int> &parameters)  //parameters[0] for coefficient of horizontal cannon, 1 for diagonal, 2 for vertical
@@ -193,26 +147,21 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
     int numCols = board->getColumns();
     int count = 0;
 
-    //Calculating the score because of soldiers
+    // Calculating the score because of soldiers
     for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it) {
 
         
       int x = it-> x;
       int y = it-> y;
-    //   vector<string> temp;
-    //   Position *temp2 = new Position(x, y); 
-    //   this->currentBoard.cannonBoard[y][x]->getAllowedMoves(this->currentBoard, temp2, temp);
-    //   mobility += temp.size();
       *defenceScoreLeftWing = (*defenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x < numCols/2);
       *offenceScoreLeftWing = (*offenceScoreLeftWing) + 3 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x < numCols/2);
       *defenceScoreRightWing = (*defenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x >= numCols/2);
       *offenceScoreRightWing = (*offenceScoreRightWing) + 3 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x >= numCols/2);
-    //   delete temp2;
   }
 
 
 
-    //Calculating the score because of cannons
+    // Calculating the score because of cannons
     for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it){
 
       int x = it-> x;
