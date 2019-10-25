@@ -5,20 +5,6 @@
 
 using namespace std;
 
-
-/// This function does minimax search and returns the best possible move at current level
-/// - Parameters:
-///   - currentDepth: the depth of the current node
-///   - currentState: the pointer to the current state
-///   - isMax: if the current node is a max node
-///   - ply: the ply upto which search is to be performed
-///   - optimalMove: move for most optimal play
-///   - colour: colour of root node
-
-// bool compareStates(Colour colour, State* state_1, State* state_2){
-//   return state_1->getValue(colour) > state_2->getValue(colour);
-// }
-
 struct myComp {
   // Colour colour;
   Colour colourOfPlayerToBeEvaluated;
@@ -38,6 +24,14 @@ struct myComp {
   }
 };
 
+/// This function does minimax search and returns the best possible move at current level
+/// - Parameters:
+///   - currentDepth: the depth of the current node
+///   - currentState: the pointer to the current state
+///   - isMax: if the current node is a max node
+///   - ply: the ply upto which search is to be performed
+///   - optimalMove: move for most optimal play
+///   - colour: colour of root node
 int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, int alpha, int beta, Colour colour) {
 
     Colour oppositeOfColour = (colour == Colour::black) ? Colour::white : Colour::black;

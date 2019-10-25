@@ -1,1 +1,1 @@
-make
+make -f AIAIO_makefile

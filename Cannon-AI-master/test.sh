@@ -1,1 +1,1 @@
-../main
+../../AIAIO/main

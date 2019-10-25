@@ -19,7 +19,7 @@ public:
     Colour colourOfCurrentPlayer;
     void removePositonFromBoard(Board &, int , int);
 
-    ///Calculates defence and offence score parameters
+    /// Calculates defence and offence score parameters
     void calculateStateScoreParameters(int, int*, int*,
                                       int*, int*,
                                       int*, int*, int*, std::vector<int> &);
