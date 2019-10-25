@@ -182,7 +182,7 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
                                     && isAllySoldierPresent(board->cannonBoard[y + 2][x - 2], colourOfPlayerToBeEvaluated)
                                     && (!((y + 3) < numRows && (x - 3) >= 0) || !(isAllySoldierPresent(board->cannonBoard[y+3][x-3], colourOfPlayerToBeEvaluated)));
 
-                                    //Currently doing defence offence only
+      // Currently doing defence offence only
       if(isLeftMostOfHorizontalCannon){
         *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 >= numCols/2);
         *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 < numCols/2);
@@ -216,8 +216,6 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
           *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
         }
       }
-      // if()
-      // count += isLeftMostOfHorizontalCannon + isTopLeftMostOfCannon + isTopMostOfVerticalCannon + isTopRightMostOfCannon;
 
     }
 
@@ -225,15 +223,16 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* 
 
 int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPlayer) {
 
-    bool isOurMove = colourOfPlayerToBeEvaluated == colourOfMovingPlayer; //True if we have to move and false if opponent has to move
-
+    bool isOurMove = colourOfPlayerToBeEvaluated == colourOfMovingPlayer; 
+    // True if we have to move and false if opponent has to move
     int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
     int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
     int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
     int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
 
 
-    int defenceScoreRightWingBlack = 0; //NOTE: Right left with respect to our screen, not with respect to rotation of board
+    int defenceScoreRightWingBlack = 0; 
+    // NOTE: Right left with respect to our screen, not with respect to rotation of board
     int offenceScoreRightWingBlack = 0;
     int defenceScoreLeftWingBlack = 0;
     int offenceScoreLeftWingBlack = 0;
@@ -244,17 +243,13 @@ int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPla
     int differenceOfSoldier;
     int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
     int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
-    // if(numberOfOpponentSoldiers < 6)
-    //   parameters = {1, 2, 3};
-    // else if(numberOfSelfSoldiers < 6)
-    //   parameters = {1, 1, 1};
-    // else 
     parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
     this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
                                                                             &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack,
                                                                             &defenceScoreCenterBlack, &offenceScoreCenterBlack, &blackMobility, parameters);
 
-    int defenceScoreRightWingWhite = 0; //NOTE: Right left with respect to our screen, not with respect to rotation of board
+    int defenceScoreRightWingWhite = 0; 
+    // NOTE: Right left with respect to our screen, not with respect to rotation of board
     int offenceScoreRightWingWhite = 0;
     int defenceScoreLeftWingWhite = 0;
     int offenceScoreLeftWingWhite = 0;
