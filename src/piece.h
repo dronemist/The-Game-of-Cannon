@@ -15,10 +15,8 @@ public:
     /// - Parameters
     ///   - currentBoard: the orientation of the current board
     virtual void getAllowedMoves(Board &, Position*, std::vector<std::string> &) {
-        // return std::vector<std::string>();
+        // Do nothing!
     }
-    /// This functions move the piece to the new starting position
-    // virtual void movePiece(Position);
     /// This function returns the type of piece
     virtual PieceType getType() {
         return PieceType::null;

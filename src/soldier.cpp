@@ -22,11 +22,10 @@ PieceType Soldier::getType() {
 }
 
 void Soldier::getAllowedMoves(Board &currentBoard, Position* position, vector<string> &answer) {
-    // vector<string> answer;
     int x = position->x;
     int y = position->y;
     int blackWhiteFactor = this->colour == Colour::black ? 1 : -1;
-    // tells if the piece can retreat;
+    // tells if the piece can retreat
     bool canRetreat = false;
     if((y > 0 && this->colour == Colour::black)
     || (y < currentBoard.getRows() - 1 && this->colour == Colour::white)) {

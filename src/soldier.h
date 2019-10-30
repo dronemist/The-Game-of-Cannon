@@ -8,9 +8,6 @@
 #include "piece.h"
 class Soldier: public Piece
 {
-private:
-    /// Current position of the soldier
-    // Position position;
 public:
     // Soldier(Position, Colour);
     Soldier(Colour);
@@ -19,8 +16,6 @@ public:
 
     /// Returns all the moves of canons in the board consisting of that soldieer
     void getAllowedCannonMoves(Board &, Position*, std::vector<std::string> &);
-    /// This functions move the piece to the new position
-    // void movePiece(Position);
     /// This function returns the type of piece
     PieceType getType();
 
