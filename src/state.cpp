@@ -31,8 +31,7 @@ State::State(int rows, int columns, Colour colour) {
 }
 
 void State::expand(vector<State*> &answer) {
-    // DOUBT: is it okay to make a copy?
-    // vector<State*> answer;
+    // Determining which soldier list to expand
     vector<Position> currentList =
     this->colourOfCurrentPlayer == Colour::black ?
     this->currentBoard.positionsOfSoldiersOnBoard[0] : this->currentBoard.positionsOfSoldiersOnBoard[1];
@@ -41,8 +40,6 @@ void State::expand(vector<State*> &answer) {
     for(it = currentList.begin(); it != currentList.end(); ++it) {
 
         // If the piece is the same colour as the current piece
-        // TODO: change if differenet lists exist
-        // if(this->currentBoard.cannonBoard[it->y][it->x]->getColour() == this->colourOfCurrentPlayer) {
         vector<string> moves;
         this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, (& (*it)), moves);
         loop(i, 0, moves.size()) {
@@ -59,7 +56,6 @@ void State::expand(vector<State*> &answer) {
             answer.push_back(newState);
         }
     }
-    // return answer;
 }
 
 void State::makeMove(string move, Board &newBoard) {
