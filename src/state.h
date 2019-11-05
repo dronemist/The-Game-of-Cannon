@@ -20,10 +20,9 @@ public:
     void removePositonFromBoard(Board &, int , int);
 
     /// Calculates defence and offence score parameters
-    void calculateStateScoreParameters(int, int*, int*,
-                                      int*, int*,
-                                      int*, int*, int*, std::vector<int> &);
+    void calculateStateScoreParameters(int, double*, double*,
+                                      double*, double*);
     // value / evaluation of the state
-    int getValue(Colour, Colour);
+    double getValue(Colour);
 };
 #endif

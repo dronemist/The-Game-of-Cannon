@@ -2,6 +2,7 @@
 #define SEARCH_H
 #include <string>
 #include "state.h"
+#include <climits>
 
 /// This function does minimax search and returns the best possible move at current level
 /// - Parameters:
@@ -12,5 +13,5 @@
 ///   - optimalMove: move for most optimal play
 ///   - alpha
 ///   - beta
-int minimax(int, State *, bool, int, std::string &, int, int, Colour);
+double minimax(int, State *, bool, int, std::string &, double, double, Colour);
 #endif

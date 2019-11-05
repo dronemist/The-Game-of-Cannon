@@ -7,6 +7,18 @@
 
 using namespace std;
 
+// Parameters for getValue
+/*
+* 0 : horizontal cannon
+* 1 : diagonal cannon
+* 2 : vertical cannon
+* 3 : townhall
+* 4 : soldier attack
+* 5 : soldier defence
+*/
+vector<double> parameters = {1.0, 1.0, 1.0, 10000.0, 3.0, 2.0};
+
+
 void State::removePositonFromBoard(Board &newBoard, int x, int y) {
     if(newBoard.cannonBoard[y][x] != nullptr) {
         int pos =
@@ -131,155 +143,176 @@ bool isAllySoldierPresent(Piece* ptr, int soldierColor){
     return true;
   return false;
 }
+void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, double* defenceScoreRightWing, double* offenceScoreRightWing,
+                                        double* defenceScoreLeftWing, double* offenceScoreLeftWing) {
+  // Current board and soldiers
+  Board* board = &(this->currentBoard);
+  vector< vector<Position> >* positionsOfSoldiersOnBoard = &(board->positionsOfSoldiersOnBoard);
 
-void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, int* defenceScoreRightWing, int* offenceScoreRightWing,
-                                        int* defenceScoreLeftWing, int* offenceScoreLeftWing,
-                                        int* defenceScoreCenter, int* offenceScoreCenter, int* mobility, vector<int> &parameters)  //parameters[0] for coefficient of horizontal cannon, 1 for diagonal, 2 for vertical
+  int numRows = board->getRows();
+  int numCols = board->getColumns();
+  int count = 0;
+
+  // Calculating the score because of soldiers
+  double soldierAttack = parameters[4];
+  double soldierDefend = parameters[5];
+  
+  // Soldier contribution;
+  double offenceContribution, defenceContribution;
+  for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it) {
+    
+    int x = it-> x;
+    int y = it-> y;
+
+    // Soldier's contribution in offense and defence
+    // ? Can be changed to parameter if required
+    offenceContribution = (colourOfPlayerToBeEvaluated == int(Colour::black) ?  (numRows - y - 1) : (y));
+    defenceContribution = (colourOfPlayerToBeEvaluated == int(Colour::black) ? (y) : (numRows - y - 1));
+
+    // offence defence left wing
+    *defenceScoreLeftWing = (*defenceScoreLeftWing) + soldierDefend * defenceContribution * (x < numCols/2);
+    *offenceScoreLeftWing = (*offenceScoreLeftWing) + soldierAttack * offenceContribution * (x < numCols/2);
+
+    // offence defence right wing
+    *defenceScoreRightWing = (*defenceScoreRightWing) + soldierDefend * defenceContribution * (x >= numCols/2);
+    *offenceScoreRightWing = (*offenceScoreRightWing) + soldierAttack * offenceContribution * (x >= numCols/2);
+  }
+  // Calculating the score because of cannons
+  for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it){
+
+    int x = it-> x;
+    int y = it-> y;
+
+    bool isLeftMostOfHorizontalCannon = ((x + 2) < numCols) && isAllySoldierPresent(board->cannonBoard[y][x+1], colourOfPlayerToBeEvaluated)
+                                        && isAllySoldierPresent(board->cannonBoard[y][x+2], colourOfPlayerToBeEvaluated)
+                                        && (!((x + 3) < numCols) || !(isAllySoldierPresent(board->cannonBoard[y][x + 3], colourOfPlayerToBeEvaluated)));
+
+    bool isTopLeftMostOfCannon = ((x+2) < numCols) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x+1], colourOfPlayerToBeEvaluated)
+                                  && isAllySoldierPresent(board->cannonBoard[y+2][x+2], colourOfPlayerToBeEvaluated)
+                                  && (!((y + 3) < numRows && (x + 3) < numCols) || !(isAllySoldierPresent(board->cannonBoard[y+3][x+3], colourOfPlayerToBeEvaluated)));
+
+    bool isTopMostOfVerticalCannon = ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x], colourOfPlayerToBeEvaluated)
+                                      && isAllySoldierPresent(board->cannonBoard[y+2][x], colourOfPlayerToBeEvaluated)
+                                      && (!((y + 3) < numRows) || !(isAllySoldierPresent(board->cannonBoard[y+3][x], colourOfPlayerToBeEvaluated)));
+    bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x-1], colourOfPlayerToBeEvaluated)
+                                  && isAllySoldierPresent(board->cannonBoard[y + 2][x - 2], colourOfPlayerToBeEvaluated)
+                                  && (!((y + 3) < numRows && (x - 3) >= 0) || !(isAllySoldierPresent(board->cannonBoard[y+3][x-3], colourOfPlayerToBeEvaluated)));
+
+    // Currently doing defence offence only
+    if(isLeftMostOfHorizontalCannon){
+      *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 >= numCols/2);
+      *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 < numCols/2);
+      *defenceScoreLeftWing = (*defenceScoreLeftWing) - max(x - 3, 0);
+      *defenceScoreRightWing = (*defenceScoreRightWing) - max(numCols - x - 5, 0); 
+    }
+
+    if(isTopMostOfVerticalCannon){
+      *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x % 2)) * (x < numCols/2);
+      *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x % 2)) * (x >= numCols/2);
+    }
+
+    if(isTopRightMostOfCannon) {
+      if(colourOfPlayerToBeEvaluated == int(Colour::black)) {  
+        // *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1) ;
+        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
+      }
+      else {
+        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
+        // *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1]* ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
+      }
+    }
+
+    if(isTopLeftMostOfCannon) {
+      if(colourOfPlayerToBeEvaluated == int(Colour::black)) {
+        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+        // *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+      }
+      else {
+        // *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
+      }
+    }
+  }
+}
+
+double State::getValue(Colour colourOfPlayerToBeEvaluated) {
+
+  parameters = {1.0, 1.0, 1.0, 10000.0, 3.0, 2.0};
+  // Get the black and white soldiers
+  int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
+  int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
+  int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
+  int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
+
+  // ? Right left with respect to our screen, not with respect to rotation of board
+  double defenceScoreRightWingBlack = 0.0; 
+  double offenceScoreRightWingBlack = 0.0;
+  double defenceScoreLeftWingBlack = 0.0;
+  double offenceScoreLeftWingBlack = 0.0;
+
+  //// vector<int> parameters;
+
+  ////int differenceOfSoldier;
+
+  // Soldier count
+  int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
+  int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
+
+  // Black score
+  // Horizontal cannon
+  // TODO: correct this for 10 X 10
+  // ! Kept like this to reciprocate results
+  parameters[0] *= ((16 - numberOfSelfSoldiers)/ 4);
+  // Diagonal cannon
+  parameters[1] *= (numberOfOpponentSoldiers/4 + 1);
+  // Vertical cannon
+  parameters[2] *= (numberOfOpponentSoldiers/4 + 1);
+  // parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
+  this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
+                                      &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack);
+
+  // TODO: can add mobility
+  // White score
+  double defenceScoreRightWingWhite = 0.0; 
+  double offenceScoreRightWingWhite = 0.0;
+  double defenceScoreLeftWingWhite = 0.0;
+  double offenceScoreLeftWingWhite = 0.0;
+
+  this->calculateStateScoreParameters(1, &defenceScoreRightWingWhite, &offenceScoreRightWingWhite,
+                                      &defenceScoreLeftWingWhite, &offenceScoreLeftWingWhite);
+
+  // Overall score
+  double value;
+  double score = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack 
+  - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite 
+  + defenceScoreRightWingBlack + offenceScoreRightWingBlack 
+  - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
+  
+  // Townhall score 
+  double townhallScore = parameters[3];
+
+  // TODO: correct this if
+  if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
+
+    value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * score;
+  }
+  else {
+    value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 1 * (score) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+  }
+
+  // Minimum number of townhalls
+  int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
+
+  if(whiteTownhalls < minimumTownhalls) {
+      value = 100000.0;
+  }
+  if(blackTownhalls < minimumTownhalls) {
+    value = -100000.0;
+  }
+  if(colourOfPlayerToBeEvaluated == Colour::black)
+      return value;
+  else
   {
-    Board* board = &(this->currentBoard);
-    vector< vector<Position> >* positionsOfSoldiersOnBoard = &(board->positionsOfSoldiersOnBoard);
-
-    int numRows = board->getRows();
-    int numCols = board->getColumns();
-    int count = 0;
-
-    // Calculating the score because of soldiers
-    for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it) {
-
-        
-      int x = it-> x;
-      int y = it-> y;
-      *defenceScoreLeftWing = (*defenceScoreLeftWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x < numCols/2);
-      *offenceScoreLeftWing = (*offenceScoreLeftWing) + 3 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x < numCols/2);
-      *defenceScoreRightWing = (*defenceScoreRightWing) + 2 * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y - 1)) * (x >= numCols/2);
-      *offenceScoreRightWing = (*offenceScoreRightWing) + 3 * (colourOfPlayerToBeEvaluated == int(Colour::black)?  (numRows - y - 1) : (y)) * (x >= numCols/2);
+      return -value;
   }
-
-
-
-    // Calculating the score because of cannons
-    for(vector<Position>::iterator it = (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].begin(); it != (*positionsOfSoldiersOnBoard)[colourOfPlayerToBeEvaluated].end(); ++it){
-
-      int x = it-> x;
-      int y = it-> y;
-
-      bool isLeftMostOfHorizontalCannon = ((x + 2) < numCols) && isAllySoldierPresent(board->cannonBoard[y][x+1], colourOfPlayerToBeEvaluated)
-                                          && isAllySoldierPresent(board->cannonBoard[y][x+2], colourOfPlayerToBeEvaluated)
-                                          && (!((x + 3) < numCols) || !(isAllySoldierPresent(board->cannonBoard[y][x + 3], colourOfPlayerToBeEvaluated)));
-
-      bool isTopLeftMostOfCannon = ((x+2) < numCols) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x+1], colourOfPlayerToBeEvaluated)
-                                    && isAllySoldierPresent(board->cannonBoard[y+2][x+2], colourOfPlayerToBeEvaluated)
-                                    && (!((y + 3) < numRows && (x + 3) < numCols) || !(isAllySoldierPresent(board->cannonBoard[y+3][x+3], colourOfPlayerToBeEvaluated)));
-
-      bool isTopMostOfVerticalCannon = ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x], colourOfPlayerToBeEvaluated)
-                                       && isAllySoldierPresent(board->cannonBoard[y+2][x], colourOfPlayerToBeEvaluated)
-                                        && (!((y + 3) < numRows) || !(isAllySoldierPresent(board->cannonBoard[y+3][x], colourOfPlayerToBeEvaluated)));
-      bool isTopRightMostOfCannon = ((x-2) >= 0) && ((y+2) < numRows) && isAllySoldierPresent(board->cannonBoard[y+1][x-1], colourOfPlayerToBeEvaluated)
-                                    && isAllySoldierPresent(board->cannonBoard[y + 2][x - 2], colourOfPlayerToBeEvaluated)
-                                    && (!((y + 3) < numRows && (x - 3) >= 0) || !(isAllySoldierPresent(board->cannonBoard[y+3][x-3], colourOfPlayerToBeEvaluated)));
-
-      // Currently doing defence offence only
-      if(isLeftMostOfHorizontalCannon){
-        *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 >= numCols/2);
-        *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[0] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (y) : (numRows - y -1)) * (x + 1 < numCols/2);
-        *defenceScoreLeftWing = (*defenceScoreLeftWing) - max(x - 3, 0);
-        *defenceScoreRightWing = (*defenceScoreRightWing) - max(numCols - x - 5, 0); 
-      }
-
-      if(isTopMostOfVerticalCannon){
-        *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x%2)) * (x < numCols/2);
-        *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x%2)) * (x >= numCols/2);
-      }
-
-      if(isTopRightMostOfCannon) {
-        if(colourOfPlayerToBeEvaluated == int(Colour::black)) {  
-          // *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1) ;
-          *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
-        }
-        else {
-          *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1] * ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
-          // *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1]* ((x + y) < numRows ? x + y: numRows + numCols - (x + y) - 1);
-        }
-      }
-
-      if(isTopLeftMostOfCannon) {
-        if(colourOfPlayerToBeEvaluated == int(Colour::black)) {
-          *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
-          // *defenceScoreRightWing = (*defenceScoreRightWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
-        }
-        else {
-          // *defenceScoreLeftWing = (*defenceScoreLeftWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
-          *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[1] * (numRows - 1 - abs(x - y) - 1);
-        }
-      }
-
-    }
-
-  }
-
-int State::getValue(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPlayer) {
-
-    bool isOurMove = colourOfPlayerToBeEvaluated == colourOfMovingPlayer; 
-    // True if we have to move and false if opponent has to move
-    int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
-    int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
-    int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
-    int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
-
-
-    int defenceScoreRightWingBlack = 0; 
-    // NOTE: Right left with respect to our screen, not with respect to rotation of board
-    int offenceScoreRightWingBlack = 0;
-    int defenceScoreLeftWingBlack = 0;
-    int offenceScoreLeftWingBlack = 0;
-    int defenceScoreCenterBlack = 0;
-    int offenceScoreCenterBlack = 0;
-    vector<int> parameters;
-    int blackMobility = 0;
-    int differenceOfSoldier;
-    int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
-    int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
-    parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
-    this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
-                                                                            &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack,
-                                                                            &defenceScoreCenterBlack, &offenceScoreCenterBlack, &blackMobility, parameters);
-
-    int defenceScoreRightWingWhite = 0; 
-    // NOTE: Right left with respect to our screen, not with respect to rotation of board
-    int offenceScoreRightWingWhite = 0;
-    int defenceScoreLeftWingWhite = 0;
-    int offenceScoreLeftWingWhite = 0;
-    int defenceScoreCenterWhite = 0;
-    int whiteMobility = 0;
-    int offenceScoreCenterWhite = 0;
-
-    this->calculateStateScoreParameters(1, &defenceScoreRightWingWhite, &offenceScoreRightWingWhite,
-                                                                            &defenceScoreLeftWingWhite, &offenceScoreLeftWingWhite,
-                                                                            &defenceScoreCenterWhite, &offenceScoreCenterWhite, &whiteMobility, parameters);
-
-    int value;
-    // int blackOffenceScore = (blackSoldiers - whiteSoldiers) + 100 * (blackTownhalls - whiteTownhalls) + 10 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite);
-    int temp = max(offenceScoreLeftWingBlack + defenceScoreLeftWingBlack - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite, defenceScoreRightWingBlack + offenceScoreRightWingBlack - offenceScoreRightWingWhite - defenceScoreRightWingWhite);
-    temp = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite + defenceScoreRightWingBlack + offenceScoreRightWingBlack - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
-
-    if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
-
-      value = (blackSoldiers - whiteSoldiers) + 10000 * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * temp;
-    }
-    else {
-      value = (blackSoldiers - whiteSoldiers) + 10000 * (blackTownhalls - whiteTownhalls) + 1 * (temp) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
-    }
-    // TODO: check this if loop
-    if(whiteTownhalls <= 2) {
-        value = 100000;
-    }
-    if(blackTownhalls <= 2) {
-      value = -100000;
-    }
-    if(colourOfPlayerToBeEvaluated == Colour::black)
-        return value;
-    else
-    {
-        return -value;
-    }
 }

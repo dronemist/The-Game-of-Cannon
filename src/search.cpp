@@ -1,5 +1,5 @@
 #include <iostream>
-#include<algorithm>
+#include <algorithm>
 #include "search.h"
 #define loop(i, start, end) for(int i = start; i < end; i++)
 
@@ -8,18 +8,16 @@ using namespace std;
 struct myComp {
   // Colour colour;
   Colour colourOfPlayerToBeEvaluated;
-  Colour colourOfMovingPlayer;
   bool isMax;
-  myComp(Colour colourOfPlayerToBeEvaluated, Colour colourOfMovingPlayer, bool isMax){
+  myComp(Colour colourOfPlayerToBeEvaluated, bool isMax){
     this->colourOfPlayerToBeEvaluated = colourOfPlayerToBeEvaluated;
-    this->colourOfMovingPlayer = colourOfMovingPlayer;
     this->isMax = isMax;
   }
   bool operator() (State* state_1, State* state_2){
       if(this->isMax) {
-        return state_1->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer) > state_2->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer);
+        return state_1->getValue(colourOfPlayerToBeEvaluated) > state_2->getValue(colourOfPlayerToBeEvaluated);
       } else {
-        return state_1->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer) < state_2->getValue(colourOfPlayerToBeEvaluated, colourOfMovingPlayer);
+        return state_1->getValue(colourOfPlayerToBeEvaluated) < state_2->getValue(colourOfPlayerToBeEvaluated);
       }
   }
 };
@@ -31,37 +29,44 @@ struct myComp {
 ///   - isMax: if the current node is a max node
 ///   - ply: the ply upto which search is to be performed
 ///   - optimalMove: move for most optimal play
+///   - alpha 
+///   - beta
 ///   - colour: colour of root node
-int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, int alpha, int beta, Colour colour) {
+double minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, double alpha, double beta, Colour colour) {
 
     Colour oppositeOfColour = (colour == Colour::black) ? Colour::white : Colour::black;
     Colour colourOfMovingPlayer = (currentDepth % 2 == 0) ? colour : oppositeOfColour;
 
     if(currentDepth == ply) {
-        return currentState->getValue(colour, colourOfMovingPlayer);
+        return currentState->getValue(colour);
     }
+
+    // Minimum number of townhalls allowed
+    int minimumTownhalls = (currentState->currentBoard.getColumns() / 2) - 2;
+
     // Don't consider moves if townhall limit reached
-    bool gameOver = (colour == Colour::black && currentState->currentBoard.numberOfWhiteTownhalls() == 2)
-    || (colour == Colour::white && currentState->currentBoard.numberOfBlackTownhalls() == 2);
+    bool gameOver = (colour == Colour::black && currentState->currentBoard.numberOfWhiteTownhalls() == minimumTownhalls)
+    || (colour == Colour::white && currentState->currentBoard.numberOfBlackTownhalls() == minimumTownhalls);
     if(gameOver) {
-        return currentState->getValue(colour, colourOfMovingPlayer);
+        return currentState->getValue(colour);
     }
+    
     vector<State*> nextStates;
     currentState->expand(nextStates);
     if (nextStates.size() == 0) {
-      return currentState->getValue(colour, colourOfMovingPlayer);
+      return currentState->getValue(colour);
     }
 
-    myComp myCompInstance = myComp(colour, colourOfMovingPlayer, isMax);
+    myComp myCompInstance = myComp(colour, isMax);
     // Sorts states in ascending and descending order
     if(currentDepth + 1 != ply)
         sort(nextStates.begin(), nextStates.end(), myCompInstance);
 
     if(isMax) {
-        int best = INT32_MIN;
+        double best = INT32_MIN;
         loop(i, 0, nextStates.size()) {
             // calculating min values of child of max
-            int minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour);
+            double minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour);
             alpha = max(alpha, minVal);
             if(alpha >= beta) {
                 delete nextStates[i];
@@ -77,10 +82,10 @@ int minimax(int currentDepth, State *currentState, bool isMax, int ply, string &
         }
         return best;
     } else {
-        int best = INT32_MAX;
+        double best = INT32_MAX;
         loop(i, 0, nextStates.size()) {
             // calculating max values of child of min
-            int maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour);
+            double maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour);
             // deleting state pointer
             delete nextStates[i];
             beta = min(beta, maxVal);
