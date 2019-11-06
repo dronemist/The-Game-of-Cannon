@@ -3,6 +3,10 @@
 #include <string>
 #include "board.h"
 
+extern std::vector<double> parameters;
+
+// TODO: is static correct?
+static std::vector<double> tempFeature;
 class State
 {
 public:
@@ -21,8 +25,8 @@ public:
 
     /// Calculates defence and offence score parameters
     void calculateStateScoreParameters(int, double*, double*,
-                                      double*, double*);
+                                      double*, double*, std::vector<double> &);
     // value / evaluation of the state
-    double getValue(Colour);
+    double getValue(Colour, std::vector<double> & = tempFeature);
 };
 #endif

@@ -41,7 +41,7 @@ int main() {
     Colour colour = id == 1 ? Colour::black : Colour::white;
     GamePlayer g1(colour, 4);
     if(id == 1) {
-        move = g1.play();
+        move = g1.play(true);
         cout<<move<<endl;
     }
     clock_t end;
@@ -62,7 +62,7 @@ int main() {
         // g2.currentState->makeMove(move, g2.currentState->currentBoard);
         // move = g2.play();
         g1.currentState->makeMove(move, g1.currentState->currentBoard);
-        move = g1.play();
+        move = g1.play(true);
 
         cout<<move<<endl;
         // cout<<"g2 played "<<move<<endl;
