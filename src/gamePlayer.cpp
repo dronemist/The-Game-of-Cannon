@@ -52,7 +52,7 @@ string GamePlayer::play(bool learn) {
                 parameters[i] += ((actualValue - expectedValue) * learningRate * features[i]);
         }
         for(int i = 0; i < parameters.size(); i++) {
-            outputLog<<features[i]<<" ";
+            outputLog<<parameters[i]<<" ";
         }
         outputLog<<endl;
         outputLog.close();
