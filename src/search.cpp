@@ -63,7 +63,7 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         sort(nextStates.begin(), nextStates.end(), myCompInstance);
 
     if(isMax) {
-        double best = INT32_MIN;
+        double best = -(__DBL_MAX__ - 1);
         loop(i, 0, nextStates.size()) {
             // calculating min values of child of max
             double minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour);
@@ -82,7 +82,7 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         }
         return best;
     } else {
-        double best = INT32_MAX;
+        double best = __DBL_MAX__;
         loop(i, 0, nextStates.size()) {
             // calculating max values of child of min
             double maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour);
