@@ -411,10 +411,18 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
     double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, 0.5);
     double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, 0.5);
 
-    // score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
+    score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
   }
 
 
+  
+  // If no soldiers are left
+  if(this->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0) {
+    blackTownhalls--;
+  } else if(this->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0) {
+    whiteTownhalls--;
+  }
+  
   // TODO: correct this if
   if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
 

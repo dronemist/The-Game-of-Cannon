@@ -44,9 +44,11 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
     // Minimum number of townhalls allowed
     int minimumTownhalls = (currentState->currentBoard.getColumns() / 2) - 2;
 
-    // Don't consider moves if townhall limit reached
-    bool gameOver = (colour == Colour::black && currentState->currentBoard.numberOfWhiteTownhalls() == minimumTownhalls)
-    || (colour == Colour::white && currentState->currentBoard.numberOfBlackTownhalls() == minimumTownhalls);
+    // Don't consider moves if townhall limit reached or soldiers finished
+    bool gameOver = (colour == Colour::black && currentState->currentBoard.numberOfWhiteTownhalls() <= minimumTownhalls)
+    || (colour == Colour::white && currentState->currentBoard.numberOfBlackTownhalls() <= minimumTownhalls)
+    || (currentState->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0)
+    || (currentState->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0);
     if(gameOver) {
         return currentState->getValue(colour);
     }

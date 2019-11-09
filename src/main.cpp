@@ -37,7 +37,7 @@ int main() {
             break;
         }
     }
-    bool toLearn = true;
+    bool toLearn = false;
     clock_t begin = clock();
     Colour colour = id == 1 ? Colour::black : Colour::white;
     GamePlayer g1(colour, 4, rows, column);
@@ -49,7 +49,8 @@ int main() {
     clock_t end;
     double elapsedSeconds;
     double timeRemaining;
-    int numberOfPlayers = 24;
+    int maxNumberOfPlayers = (column / 2) * 3;
+    int numberOfPlayers = maxNumberOfPlayers;
     clock_t timeTemp1;
     clock_t timeTemp2;
     float timeForOtherUser = 0;
@@ -75,8 +76,8 @@ int main() {
         numberOfPlayers = g1.currentState->currentBoard.positionsOfSoldiersOnBoard[0].size() 
                             + g1.currentState->currentBoard.positionsOfSoldiersOnBoard[1].size();
         
-        if(numberOfPlayers <= 12 && timeRemaining > 20){
-            g1.ply = 5;
+        if(numberOfPlayers <= (maxNumberOfPlayers/2) && timeRemaining > 20){
+            g1.ply = 6;
         }
         else {
             g1.ply = 4;
