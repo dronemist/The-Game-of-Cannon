@@ -373,18 +373,20 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   // Soldier count
   int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
   int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
-  int maxSoldiersOneSide = 3 * (this->currentBoard.getColumns() / 2);
+  int numCols = this->currentBoard.getColumns();  
+  int maxSoldiersOneSide = 3 * ( numCols/ 2);
+
 
   // Black score
   vector<double> blackFeatures(parametersTemp.size(), 0.0);
   // Horizontal cannon
   // TODO: correct this for 10 X 10
   // ! Kept like this to reciprocate results
-  parameters[0] *= ((16 - numberOfSelfSoldiers)/ 4);
+  parameters[0] *= ((maxSoldiersOneSide + (numCols/2) - numberOfSelfSoldiers)/ (numCols/2));
   // Diagonal cannon
-  parameters[1] *= (numberOfOpponentSoldiers/4 + 1);
+  parameters[1] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
   // Vertical cannon
-  parameters[2] *= (numberOfOpponentSoldiers/4 + 1);
+  parameters[2] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
   // parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
   this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
                                       &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack, blackFeatures);
