@@ -30,6 +30,10 @@
 *.exe
 *.out
 *.app
+Cannon-AI-master/executables
+
+# Txt
+*.txt
 
 # Mac file
 .DS_store
