@@ -16,7 +16,9 @@ using namespace std;
 * 4 : soldier attack
 * 5 : soldier defence
 */
-vector<double> parameters = {1.0, 1.0, 1.0, 10000.0, 3.0, 2.0};
+vector<double> parameters = {1.0, 1.0, 1.0, 10000.0, 3.0, 2.0}; 
+//vector<double> parameters = {0.742608, 0.609946, 0.758162, 10000, 3.10526, 1.97368};
+
 
 void State::removePositonFromBoard(Board &newBoard, int x, int y) {
     if(newBoard.cannonBoard[y][x] != nullptr) {
@@ -248,9 +250,93 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, doubl
   }
 }
 
+
+double State::getMinimumTownHallDistanceHeuristicValue(int colourOfPlayerToBeEvaluated, double weight){
+
+  int numTownhalls = this->currentBoard.getColumns() / 2;
+  vector<int> townHallHeuristicValues(numTownhalls, INT32_MAX);
+
+  int numRows = this->currentBoard.getRows();
+  int numRowsMinusOne = numRows - 1;
+
+  // Aliasing the positionOfSoldiersOnBoard variable
+  vector<Position> & positionOfSoldiersOnBoard = this->currentBoard.positionsOfSoldiersOnBoard[colourOfPlayerToBeEvaluated];
+  int numSoldiers = positionOfSoldiersOnBoard.size();
+
+  loop(i, 0, numSoldiers){
+    int soldierHorizontalPosition = positionOfSoldiersOnBoard[i].x;
+    int soldierVerticalPosition = positionOfSoldiersOnBoard[i].y;
+    int spanLeftLimit = 0;
+    int spanRightLimit = 0;
+
+    if (colourOfPlayerToBeEvaluated == int(Colour::black)){ // If colour of player is black
+      
+      spanLeftLimit = soldierHorizontalPosition - soldierVerticalPosition;
+      spanRightLimit = soldierHorizontalPosition + soldierVerticalPosition; 
+
+      // Making left limit even since white townhalls at even position
+      spanLeftLimit = spanLeftLimit % 2 == 0 ? spanLeftLimit : spanLeftLimit + 1; 
+      spanLeftLimit = max(spanLeftLimit, 0);
+      spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns());
+      
+      // Looking at white townhalls
+      for(int i=spanLeftLimit; i<spanRightLimit; i+=2){
+        bool doesTownHallExist = this->currentBoard.cannonBoard[0][i] != nullptr 
+                              && this->currentBoard.cannonBoard[0][i]->getType() == PieceType::townhall;
+
+        if (doesTownHallExist){
+          townHallHeuristicValues[i/2] = min(townHallHeuristicValues[i/2], soldierVerticalPosition);
+        }
+
+      }
+
+
+    }
+    else{ // If colour of player is white
+
+      spanLeftLimit = soldierHorizontalPosition - (numRowsMinusOne - soldierVerticalPosition);
+      spanRightLimit = soldierHorizontalPosition + (numRowsMinusOne - soldierVerticalPosition); 
+
+      // Making left limit odd since black townhalls at odd positions
+      spanLeftLimit = spanLeftLimit % 2 == 1 ? spanLeftLimit : spanLeftLimit + 1; 
+      spanLeftLimit = max(spanLeftLimit, 1);
+      spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns());
+      
+      // Looking at white townhalls
+      for(int i=spanLeftLimit; i<spanRightLimit; i+=2){
+        bool doesTownHallExist = this->currentBoard.cannonBoard[numRowsMinusOne][i] != nullptr 
+                              && this->currentBoard.cannonBoard[numRowsMinusOne][i]->getType() == PieceType::townhall;
+
+        if (doesTownHallExist){
+          townHallHeuristicValues[i/2] = min(townHallHeuristicValues[i/2], numRowsMinusOne - soldierVerticalPosition);
+        }
+
+      }
+
+    }
+
+  }
+
+  double score = 0;
+
+  loop(i, 0, numTownhalls){
+    bool toCountValue = townHallHeuristicValues[i] != INT32_MAX;
+
+    if(toCountValue){
+      double value = numRowsMinusOne - townHallHeuristicValues[i];
+      score += value*value*weight;
+    }
+  } 
+
+  return score;
+}
+
+
+
+
 double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &features) {
 
-  features.empty();
+  features.clear();
   vector<double> parametersTemp = parameters;
   // Get the black and white soldiers
   int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
@@ -271,6 +357,7 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   // Soldier count
   int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
   int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
+  int maxSoldiersOneSide = 3 * (this->currentBoard.getColumns() / 2);
 
   // Black score
   vector<double> blackFeatures(parametersTemp.size(), 0.0);
@@ -319,6 +406,15 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   // Townhall score 
   double townhallScore = parameters[3];
 
+
+  if (numberOfSelfSoldiers + numberOfOpponentSoldiers < maxSoldiersOneSide){
+    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, 0.5);
+    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, 0.5);
+
+    // score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
+  }
+
+
   // TODO: correct this if
   if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
 
@@ -332,7 +428,7 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
 
   if(whiteTownhalls < minimumTownhalls) {
-      value = 100000.0;
+    value = 100000.0;
   }
   if(blackTownhalls < minimumTownhalls) {
     value = -100000.0;

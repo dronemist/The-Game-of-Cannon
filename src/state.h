@@ -26,6 +26,8 @@ public:
     /// Calculates defence and offence score parameters
     void calculateStateScoreParameters(int, double*, double*,
                                       double*, double*, std::vector<double> &);
+    /// Calculates Minimum TownHall Distance Heuristic for soldiers
+    double getMinimumTownHallDistanceHeuristicValue(int, double);
     // value / evaluation of the state
     double getValue(Colour, std::vector<double> & = tempFeature);
 };
