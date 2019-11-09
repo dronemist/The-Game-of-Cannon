@@ -217,11 +217,24 @@ void State::calculateStateScoreParameters(int colourOfPlayerToBeEvaluated, doubl
     }
 
     if(isTopMostOfVerticalCannon) {
-      *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x % 2)) * (x < numCols/2);
-      *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x % 2)) * (x >= numCols/2);
+      // Whether townhall is present in those x coordinates
+      bool isTownhallPresent = false;
+      if(colourOfPlayerToBeEvaluated == int(Colour::black)) {
+        if(this->currentBoard.cannonBoard[0][x] != nullptr
+          && this->currentBoard.cannonBoard[0][x]->getType() == PieceType::townhall) {
+            isTownhallPresent = true;
+        }
+      } else if (colourOfPlayerToBeEvaluated == int(Colour::white)) {
+        if(this->currentBoard.cannonBoard[numRows - 1][x] != nullptr
+          && this->currentBoard.cannonBoard[numRows - 1][x]->getType() == PieceType::townhall) {
+            isTownhallPresent = true;
+        }
+      }
+      *offenceScoreLeftWing = (*offenceScoreLeftWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - (!isTownhallPresent)) : (y + 1) * (1 + isTownhallPresent)) * (x < numCols/2);
+      *offenceScoreRightWing = (*offenceScoreRightWing) + parameters[2] * (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - (!isTownhallPresent)) : (y + 1) * (1 + isTownhallPresent)) * (x >= numCols/2);
 
       // Assigning feature value
-      featureVals[2] += (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - x%2) : (y + 1) * (1 + x % 2));
+      featureVals[2] += (colourOfPlayerToBeEvaluated == int(Colour::black)? (numRows - (y+1)) * (2 - (!isTownhallPresent)) : (y + 1) * (1 + isTownhallPresent));
     }
 
     if(isTopRightMostOfCannon) {
@@ -326,10 +339,11 @@ double State::getMinimumTownHallDistanceHeuristicValue(int colourOfPlayerToBeEva
 
     if(toCountValue){
       double value = numRowsMinusOne - townHallHeuristicValues[i];
-      score += value*value*weight;
+      score = max(value, score);
+      // score += value*value*weight;
     }
   } 
-
+  score = score * weight;
   return score;
 }
 
@@ -409,9 +423,9 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   double townhallScore = parameters[3];
 
 
-  if (numberOfSelfSoldiers + numberOfOpponentSoldiers < maxSoldiersOneSide) {
-    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, 0.5);
-    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, 0.5);
+  if (numberOfSelfSoldiers + numberOfOpponentSoldiers <= 15) {
+    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, 20);
+    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, 20);
 
     score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
   }

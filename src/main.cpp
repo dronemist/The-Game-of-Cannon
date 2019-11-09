@@ -77,10 +77,10 @@ int main() {
                             + g1.currentState->currentBoard.positionsOfSoldiersOnBoard[1].size();
         
         if(numberOfPlayers <= 7 && timeRemaining > 40) {
-            g1.ply = 7;
+            g1.ply = 6;
         } else if(numberOfPlayers <= (maxNumberOfPlayers/2) && timeRemaining > 30) {
             g1.ply = 6;
-        } else if(numberOfPlayers < 20 && timeRemaining > 20) {
+        } else if(numberOfPlayers < 21 && timeRemaining > 20) {
             g1.ply = 5;
         }
         else {
