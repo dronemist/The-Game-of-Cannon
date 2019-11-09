@@ -80,7 +80,7 @@ int main() {
             g1.ply = 7;
         } else if(numberOfPlayers <= (maxNumberOfPlayers/2) && timeRemaining > 30) {
             g1.ply = 6;
-        } else if(numberOfPlayers < 20 && timeRemaining > 20) {
+        } else if(numberOfPlayers < 21 && timeRemaining > 20) {
             g1.ply = 5;
         }
         else {
