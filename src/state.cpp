@@ -438,10 +438,18 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
 
   if(whiteTownhalls < minimumTownhalls) {
-    value = 100000.0;
+    if(blackTownhalls == minimumTownhalls) {
+      value = 80000.0;
+    } else {
+      value = 100000.0;
+    }
   }
   if(blackTownhalls < minimumTownhalls) {
-    value = -100000.0;
+    if(whiteTownhalls == minimumTownhalls) {
+      value = -80000.0;
+    } else {
+      value = -100000.0;
+    }
   }
   // Restoring value
   parameters = parametersTemp;
