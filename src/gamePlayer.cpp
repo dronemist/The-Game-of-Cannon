@@ -9,7 +9,7 @@ using namespace std;
 GamePlayer::GamePlayer(Colour colour, int ply, int row, int column) {
     this->currentState = new State(row, column, colour);
     this->ply = ply;
-    // Initialising parameters
+    /*// Initialising parameters
     ifstream weightsFile;
     // For the player which is undergoing training
     // weightsFile.open("current_weights.txt");
@@ -18,14 +18,14 @@ GamePlayer::GamePlayer(Colour colour, int ply, int row, int column) {
 
 
     int count = 0;
-     string weight_string;
+    string weight_string;
 
     while(weightsFile >> weight_string){
          parameters[count] = stod(weight_string);
          ++count;
      }
 
-     weightsFile.close();
+     weightsFile.close();*/
 }
 
 string GamePlayer::play(bool learn) {
