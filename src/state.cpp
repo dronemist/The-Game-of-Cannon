@@ -318,7 +318,14 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
 
   // Townhall score 
   double townhallScore = parameters[3];
-
+  
+  // If no soldiers are left
+  if(this->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0) {
+    blackTownhalls--;
+  } else if(this->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0) {
+    whiteTownhalls--;
+  }
+  
   // TODO: correct this if
   if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
 

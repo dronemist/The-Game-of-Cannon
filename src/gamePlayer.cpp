@@ -37,7 +37,7 @@ string GamePlayer::play(bool learn) {
     double actualValue = minimax(0, this->currentState, true, this->ply, optimalMove, -(__DBL_MAX__ - 1), __DBL_MAX__, this->currentState->colourOfCurrentPlayer);
     // learning rate
     // ? preferably decrease as model learns
-    double learningRate = 0.001;
+    double learningRate = 0.0001;
 
     if (learn) {
         // writing weights to file
@@ -48,11 +48,11 @@ string GamePlayer::play(bool learn) {
         expectedValue = this->currentState->getValue(this->currentState->colourOfCurrentPlayer, features);
         for(int i = 0; i < parameters.size(); i++) {
             double diff = actualValue - expectedValue;
-            if(abs(diff) < 10000)
+            if(abs(diff) < 5000)
                 parameters[i] += ((actualValue - expectedValue) * learningRate * features[i]);
         }
         for(int i = 0; i < parameters.size(); i++) {
-            outputLog<<features[i]<<" ";
+            outputLog<<parameters[i]<<" ";
         }
         outputLog<<endl;
         outputLog.close();

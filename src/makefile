@@ -5,7 +5,7 @@ CXX = g++ -std=c++11 -O3
 CXXFLAGS = -Wall -g
 
 # Executable name
-OUT = main
+OUT = current_bot
 
 all: $(OUT)
 

@@ -37,7 +37,7 @@ int main() {
             break;
         }
     }
-    bool toLearn = true;
+    bool toLearn = false;
     clock_t begin = clock();
     Colour colour = id == 1 ? Colour::black : Colour::white;
     GamePlayer g1(colour, 4, rows, column);
