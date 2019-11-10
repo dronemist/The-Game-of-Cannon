@@ -619,10 +619,6 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
       value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 1 * (score) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
     }
 
-    if (blackTownhalls != whiteTownhalls){
-      value = townhallScore * (blackTownhalls - whiteTownhalls);
-    }
-
     // Minimum number of townhalls
     int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
 
