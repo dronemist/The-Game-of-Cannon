@@ -86,6 +86,12 @@ int main() {
         else {
             g1.ply = 4;
         }
+        if(timeRemaining < 5) {
+            g1.ply = 3;
+        }
+        if(timeRemaining < 2) {
+            g1.ply = 2;
+        }  
     }
 
 }
