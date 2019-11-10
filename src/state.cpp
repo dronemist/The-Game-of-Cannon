@@ -51,7 +51,7 @@ State:: ~State(){
 
 }
 
-void State::expand(vector<State*> &answer) {
+void State::expand(vector<State*> &answer, bool passingShotAllowed) {
     // Determining which soldier list to expand
     vector<Position> currentList =
     this->colourOfCurrentPlayer == Colour::black ?
@@ -62,7 +62,7 @@ void State::expand(vector<State*> &answer) {
 
         // If the piece is the same colour as the current piece
         vector<string> moves;
-        this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, (& (*it)), moves);
+        this->currentBoard.cannonBoard[it->y][it->x]->getAllowedMoves(this->currentBoard, (& (*it)), moves, passingShotAllowed);
         loop(i, 0, moves.size()) {
             State *newState = new State();
             // DOUBT: this assignment makes copies
@@ -500,3 +500,45 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
       return -value;
   }
 }
+
+bool comparePosition(Position p1, Position p2) {
+    if(p2.y > p1.y)
+        return true;
+    else if(p2.y == p1.y) {
+        if(p2.x >= p1.x)
+            return true;
+        return false;    
+    } 
+    else {
+        return false;
+    }    
+}
+
+string State::getStringValue() {
+    string answer = "";
+    // adding black soldiers
+    vector<Position> allPiecePosition = this->currentBoard.positionsOfSoldiersOnBoard[0];
+    // adding white soldiers
+    allPiecePosition.insert(allPiecePosition.end(), this->currentBoard.positionsOfSoldiersOnBoard[1].begin(), this->currentBoard.positionsOfSoldiersOnBoard[1].end());
+    // adding white townhalls
+    for(int j = 0; j < this->currentBoard.getColumns(); j += 2) {
+        if(this->currentBoard.cannonBoard[0][j] != nullptr &&
+        this->currentBoard.cannonBoard[0][j]->getType() == PieceType::townhall){
+            allPiecePosition.push_back(Position(j, 0));
+        }
+    }
+    int rows = this->currentBoard.getRows();
+    // adding black townhalls
+    for(int j = 1; j < this->currentBoard.getColumns(); j += 2) {
+        if(this->currentBoard.cannonBoard[rows - 1][j] != nullptr &&
+        this->currentBoard.cannonBoard[rows - 1][j]->getType() == PieceType::townhall){
+            allPiecePosition.push_back(Position(j, rows - 1));
+        }
+    }
+    sort(allPiecePosition.begin(), allPiecePosition.end(), comparePosition);
+    loop(i, 0, allPiecePosition.size()) {
+        answer += to_string(allPiecePosition[i].x);
+        answer += to_string(allPiecePosition[i].y);
+    }
+    return answer;
+}  

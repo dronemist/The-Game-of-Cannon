@@ -4,6 +4,8 @@
 class GamePlayer
 {
 private:
+    std::string previousOfPreviousString;
+    std::string previousString;
 public:
     State *currentState;
     int ply;

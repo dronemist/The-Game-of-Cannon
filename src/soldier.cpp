@@ -21,7 +21,7 @@ PieceType Soldier::getType() {
     return PieceType::soldier;
 }
 
-void Soldier::getAllowedMoves(Board &currentBoard, Position* position, vector<string> &answer) {
+void Soldier::getAllowedMoves(Board &currentBoard, Position* position, vector<string> &answer, bool passingShotAllowed) {
     int x = position->x;
     int y = position->y;
     int blackWhiteFactor = this->colour == Colour::black ? 1 : -1;
@@ -89,13 +89,13 @@ void Soldier::getAllowedMoves(Board &currentBoard, Position* position, vector<st
     }
 
     vector<string> cannonMoves;
-    getAllowedCannonMoves(currentBoard, position, cannonMoves);
+    getAllowedCannonMoves(currentBoard, position, cannonMoves, passingShotAllowed);
     answer.insert(answer.end(), cannonMoves.begin(), cannonMoves.end());
 }
 
 
 /// This returns all the cannon moves in the current Board
-void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vector<string> &answer){
+void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vector<string> &answer, bool passingShotAllowed){
 
   int x = position->x;
   int y = position->y;
@@ -122,24 +122,24 @@ void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vec
     }
 
     // Checking for closer CannonShot in right direction, can do blank shot also
-    if((x + 4) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y][x+4])){
+    if((x + 4) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+3]) && passingShotHelper(currentBoard.cannonBoard[y][x+4], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x + 4, y));
     }
 
     // Further shot in right direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((x + 5) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y][x+5])){
+    if((x + 5) < numCols && isPositionEmpty(currentBoard.cannonBoard[y][x+3]) && passingShotHelper(currentBoard.cannonBoard[y][x+5], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x + 5, y));
     }
 
     // Checking for shooting in Left, closer shot
-    if((x - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y][x-1]) && canMoveToPosition(currentBoard.cannonBoard[y][x-2])){
+    if((x - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y][x-1]) && passingShotHelper(currentBoard.cannonBoard[y][x-2], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x - 2, y));
     }
 
     // Further shot in left direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((x - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y][x-1]) && canMoveToPosition(currentBoard.cannonBoard[y][x-3])){
+    if((x - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y][x-1]) && passingShotHelper(currentBoard.cannonBoard[y][x-3], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x - 3, y));
     }
   }
@@ -156,24 +156,24 @@ void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vec
     }
 
     // Checking for closer CannonShot in down direction, can do blank shot also
-    if((y + 4) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x]) && canMoveToPosition(currentBoard.cannonBoard[y+4][x])){
+    if((y + 4) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x]) && passingShotHelper(currentBoard.cannonBoard[y+4][x], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x, y + 4));
     }
 
     // Further shot in down direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x]) && canMoveToPosition(currentBoard.cannonBoard[y+5][x])){
+    if((y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x]) && passingShotHelper(currentBoard.cannonBoard[y+5][x], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x, y + 5));
     }
 
     // Checking for shooting upwards, closer shot
-    if((y - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x]) && canMoveToPosition(currentBoard.cannonBoard[y-2][x])){
+    if((y - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x]) && passingShotHelper(currentBoard.cannonBoard[y-2][x], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x, y - 2));
     }
 
     // Further shot in upper direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x]) && canMoveToPosition(currentBoard.cannonBoard[y-3][x])){
+    if((y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x]) && passingShotHelper(currentBoard.cannonBoard[y-3][x], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x, y - 3));
     }
   }
@@ -191,24 +191,24 @@ void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vec
     }
 
     // Checking for closer CannonShot in down direction, can do blank shot also
-    if((x + 4) < numCols && (y + 4) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y+4][x+4])){
+    if((x + 4) < numCols && (y + 4) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x+3]) && passingShotHelper(currentBoard.cannonBoard[y+4][x+4], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x + 4, y + 4));
     }
 
     // Further shot in down direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((x + 5) < numCols && (y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x+3]) && canMoveToPosition(currentBoard.cannonBoard[y+5][x+5])){
+    if((x + 5) < numCols && (y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x+3]) && passingShotHelper(currentBoard.cannonBoard[y+5][x+5], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x + 5, y + 5));
     }
 
     // Checking for shooting upwards, closer shot
-    if((x - 2) >= 0 && (y - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x-1]) && canMoveToPosition(currentBoard.cannonBoard[y-2][x-2])){
+    if((x - 2) >= 0 && (y - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x-1]) && passingShotHelper(currentBoard.cannonBoard[y-2][x-2], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x - 2, y - 2));
     }
 
     // Further shot in upper direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((x - 3) >= 0 && (y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x-1]) && canMoveToPosition(currentBoard.cannonBoard[y-3][x-3])){
+    if((x - 3) >= 0 && (y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x-1]) && passingShotHelper(currentBoard.cannonBoard[y-3][x-3], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x - 3, y - 3));
     }
 
@@ -225,27 +225,33 @@ void Soldier::getAllowedCannonMoves(Board &currentBoard, Position* position, vec
     }
 
     // Checking for closer CannonShot in down direction, can do blank shot also
-    if((x - 4) >= 0 && (y + 4) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x-3]) && canMoveToPosition(currentBoard.cannonBoard[y+4][x-4])){
+    if((x - 4) >= 0 && (y + 4) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x-3]) && passingShotHelper(currentBoard.cannonBoard[y+4][x-4], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x - 4, y + 4));
     }
 
     // Further shot in down direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((x - 5) >= 0 && (y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x-3]) && canMoveToPosition(currentBoard.cannonBoard[y+5][x-5])){
+    if((x - 5) >= 0 && (y + 5) < numRows && isPositionEmpty(currentBoard.cannonBoard[y+3][x-3]) && passingShotHelper(currentBoard.cannonBoard[y+5][x-5], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x - 5, y + 5));
     }
 
     // Checking for shooting upwards, closer shot
-    if((x + 2) < numCols && (y - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x+1]) && canMoveToPosition(currentBoard.cannonBoard[y-2][x+2])){
+    if((x + 2) < numCols && (y - 2) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x+1]) && passingShotHelper(currentBoard.cannonBoard[y-2][x+2], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x + 2, y - 2));
     }
 
     // Further shot in upper direction
     // NOTE: Can a cannon shoot at farther end if soldier in the line?
-    if((x + 3) < numCols && (y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x+1]) && canMoveToPosition(currentBoard.cannonBoard[y-3][x+3])){
+    if((x + 3) < numCols && (y - 3) >= 0 && isPositionEmpty(currentBoard.cannonBoard[y-1][x+1]) && passingShotHelper(currentBoard.cannonBoard[y-3][x+3], passingShotAllowed)){
       answer.push_back(cannonShotEncoding(x, y, x + 3, y - 3));
     }
   }
+}
+
+bool Soldier::passingShotHelper(Piece *ptr, bool passingShotAllowed) {
+  if((passingShotAllowed && canMoveToPosition(ptr)) || (!passingShotAllowed && isOpponentPresent(ptr)))
+    return true;
+  return false;  
 }
 
 bool Soldier::isOpponentSoldierPresent(Piece *ptr) {

@@ -14,7 +14,7 @@ public:
     /// This function returns the allowed move of the cannon
     /// - Parameters
     ///   - currentBoard: the orientation of the current board
-    virtual void getAllowedMoves(Board &, Position*, std::vector<std::string> &) {
+    virtual void getAllowedMoves(Board &, Position*, std::vector<std::string> &, bool) {
         // Do nothing!
     }
     /// This function returns the type of piece

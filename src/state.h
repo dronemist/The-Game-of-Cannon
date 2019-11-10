@@ -14,7 +14,7 @@ public:
     Board currentBoard;
     /// The move that brought the state from previous state to current state
     std::string moveFromPreviousState;
-    void expand(std::vector<State*> &);
+    void expand(std::vector<State*> &, bool);
     /// constructor;
     State(int = 8, int = 8, Colour = Colour::black);
     /// destructor
@@ -32,5 +32,7 @@ public:
     double getMinimumTownHallDistanceHeuristicValue(int, double);
     // value / evaluation of the state
     double getValue(Colour, std::vector<double> & = tempFeature);
+    // String value
+    std::string getStringValue();
 };
 #endif

@@ -12,10 +12,10 @@ public:
     // Soldier(Position, Colour);
     Soldier(Colour);
     /// This function returns the allowed moves of the soldier
-    void getAllowedMoves(Board &, Position*, std::vector<std::string> &);
+    void getAllowedMoves(Board &, Position*, std::vector<std::string> &, bool);
 
     /// Returns all the moves of canons in the board consisting of that soldieer
-    void getAllowedCannonMoves(Board &, Position*, std::vector<std::string> &);
+    void getAllowedCannonMoves(Board &, Position*, std::vector<std::string> &, bool);
     /// This function returns the type of piece
     PieceType getType();
 
@@ -30,6 +30,8 @@ public:
 
     /// To check if no piece present at that position
     bool isPositionEmpty(Piece *);
+    /// Changes if passing shot is allowed
+    bool passingShotHelper(Piece *, bool);
     /// This function tells if an opponent is present
     bool isOpponentPresent(Piece *);
     /// This function tells if soldier can move to ptr

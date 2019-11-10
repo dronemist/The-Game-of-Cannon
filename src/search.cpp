@@ -32,7 +32,8 @@ struct myComp {
 ///   - alpha 
 ///   - beta
 ///   - colour: colour of root node
-double minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, double alpha, double beta, Colour colour) {
+///   - passingShotAllowed
+double minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, double alpha, double beta, Colour colour, bool passingShotAllowed) {
 
 
     Colour oppositeOfColour = (colour == Colour::black) ? Colour::white : Colour::black;
@@ -59,7 +60,7 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
   
 
     vector<State*> nextStates;
-    currentState->expand(nextStates);
+    currentState->expand(nextStates, passingShotAllowed);
 
     
 
@@ -76,7 +77,7 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         double best = -(__DBL_MAX__ - 1);
         loop(i, 0, nextStates.size()) {
             // calculating min values of child of max
-            double minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour);
+            double minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour, passingShotAllowed);
             alpha = max(alpha, minVal);
             if(alpha >= beta) {
                 // delete nextStates[i];
@@ -98,7 +99,7 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         double best = __DBL_MAX__;
         loop(i, 0, nextStates.size()) {
             // calculating max values of child of min
-            double maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour);
+            double maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour, passingShotAllowed);
             beta = min(beta, maxVal);
             if(alpha >= beta) {
                 loop(j, i, nextStates.size()){
