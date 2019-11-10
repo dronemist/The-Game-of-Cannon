@@ -3,6 +3,10 @@
 #define loop(i, start, end) for(int i = start; i < end; i++)
 using namespace std;
 
+Soldier *whiteSoldier = new Soldier(Colour::white);
+Soldier *blackSoldier = new Soldier(Colour::black);
+Townhall *whiteTownHall = new Townhall(Colour::white);
+Townhall *blackTownHall = new Townhall(Colour::black);
 
 Board::Board(int rows, int columns) {
     this->columns = columns;
@@ -16,15 +20,15 @@ Board::Board(int rows, int columns) {
     // filling the white pieces
     loop(j, 0, columns) {
         if(j % 2 == 0) {
-            Townhall *townhall = new Townhall(Position(j, 0), Colour::white);
+            Townhall *townhall = whiteTownHall;
             this->cannonBoard[0][j] = townhall;
 
         } else {
-            Soldier *soldier = new Soldier(Colour::white);
+            Soldier *soldier = whiteSoldier;
             this->cannonBoard[0][j] = soldier;
-            Soldier *soldier2 = new Soldier(Colour::white);
+            Soldier *soldier2 = whiteSoldier;
             this->cannonBoard[1][j] = soldier2;
-            Soldier *soldier3 = new Soldier(Colour::white);
+            Soldier *soldier3 = whiteSoldier;
             this->cannonBoard[2][j] = soldier3;
 
             // Inserting these soldier positions into list of soldiers positions
@@ -37,14 +41,14 @@ Board::Board(int rows, int columns) {
     loop(j, 0, columns) {
         int y = rows - 1;
         if(j % 2 == 1) {
-            Townhall *townhall = new Townhall(Position(j, y), Colour::black);
+            Townhall *townhall =blackTownHall;
             this->cannonBoard[y][j] = townhall;
         } else {
-            Soldier *soldier = new Soldier(Colour::black);
+            Soldier *soldier = blackSoldier;
             this->cannonBoard[y][j] = soldier;
-            Soldier *soldier2 = new Soldier(Colour::black);
+            Soldier *soldier2 = blackSoldier;
             this->cannonBoard[y - 1][j] = soldier2;
-            Soldier *soldier3 = new Soldier(Colour::black);
+            Soldier *soldier3 = blackSoldier;
             this->cannonBoard[y - 2][j] = soldier3;
 
             // Inserting these soldier positions into list of soldier positions
@@ -54,6 +58,64 @@ Board::Board(int rows, int columns) {
         }
     }
 }
+
+
+void Board::freeMemory() {
+    
+    cout<<"Destructing"<<endl;
+    loop(i, 0, positionsOfSoldiersOnBoard[0].size()){
+        Position temp = positionsOfSoldiersOnBoard[0][i];
+        // cout<<"Here"<<endl;
+        if (this->cannonBoard[temp.y][temp.x] != nullptr){
+            delete this->cannonBoard[temp.y][temp.x];
+            this->cannonBoard[temp.y][temp.x] = nullptr;
+        }
+    }
+
+    // cout<<"There"<<endl;
+    
+
+    loop(i, 0, positionsOfSoldiersOnBoard[1].size()){
+        Position temp = positionsOfSoldiersOnBoard[1][i];
+        if (this->cannonBoard[temp.y][temp.x] != nullptr){
+            delete this->cannonBoard[temp.y][temp.x];
+            this->cannonBoard[temp.y][temp.x] = nullptr;
+        }
+    }
+
+    
+
+    // Removing the white pieces
+    loop(j, 0, columns) {
+        if(j % 2 == 0) {
+            //Townhall *townhall = new Townhall(Position(j, 0), Colour::white);
+            if (this->cannonBoard[0][j] != nullptr){
+                delete this->cannonBoard[0][j];
+                this->cannonBoard[0][j] = nullptr;
+            }
+
+        }
+    }
+
+    
+    // Removing the black pieces
+    loop(j, 0, columns) {
+        int y = rows - 1;
+        if(j % 2 == 1) {
+            //Townhall *townhall = new Townhall(Position(j, y), Colour::black);
+            if (this->cannonBoard[y][j] != nullptr){
+                delete this->cannonBoard[y][j];
+                this->cannonBoard[y][j] = nullptr;
+            }
+        }
+    }
+
+    cout<<"There"<<endl;
+    
+}
+
+
+
 
 void Board::printBoard() {
     loop(i, 0, this->rows) {

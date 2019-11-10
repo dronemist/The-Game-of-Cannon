@@ -3,9 +3,8 @@
 
 using namespace std;
 
-Townhall::Townhall(Position position, Colour colour) {
+Townhall::Townhall(Colour colour) {
     this->colour = colour;
-    this->position = position;
 }
 
 PieceType Townhall::getType() {

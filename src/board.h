@@ -23,6 +23,8 @@ public:
 
     /// Constructor
     Board(int = 8, int = 8);
+    /// Free memory
+    void freeMemory();
     /// Temp function to print board
     void printBoard();
     /// returns the number of rows

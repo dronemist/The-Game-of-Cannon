@@ -11,7 +11,7 @@ private:
     /// Current position of the townhall
     Position position;
 public:
-    Townhall(Position, Colour);
+    Townhall(Colour);
     /// This function returns the type of piece
     PieceType getType();
 };

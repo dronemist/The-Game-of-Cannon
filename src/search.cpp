@@ -34,12 +34,15 @@ struct myComp {
 ///   - colour: colour of root node
 double minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, double alpha, double beta, Colour colour) {
 
+
     Colour oppositeOfColour = (colour == Colour::black) ? Colour::white : Colour::black;
     Colour colourOfMovingPlayer = (currentDepth % 2 == 0) ? colour : oppositeOfColour;
 
     if(currentDepth == ply) {
         return currentState->getValue(colour);
     }
+
+    
 
     // Minimum number of townhalls allowed
     int minimumTownhalls = (currentState->currentBoard.getColumns() / 2) - 2;
@@ -53,8 +56,13 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         return currentState->getValue(colour);
     }
     
+  
+
     vector<State*> nextStates;
     currentState->expand(nextStates);
+
+    
+
     if (nextStates.size() == 0) {
       return currentState->getValue(colour);
     }

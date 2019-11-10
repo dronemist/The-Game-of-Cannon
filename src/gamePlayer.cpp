@@ -7,6 +7,7 @@ using namespace std;
 
 // TODO: incorporate evaluation function in this
 GamePlayer::GamePlayer(Colour colour, int ply, int row, int column) {
+    // cout<<"Hi"<<endl;
     this->currentState = new State(row, column, colour);
     this->ply = ply;
     /*// Initialising parameters
@@ -29,6 +30,8 @@ GamePlayer::GamePlayer(Colour colour, int ply, int row, int column) {
 }
 
 string GamePlayer::play(bool learn) {
+
+
     string optimalMove = "";
 
     // Expected value of the current state
@@ -36,6 +39,7 @@ string GamePlayer::play(bool learn) {
     // Actual value of the current state
     double actualValue = minimax(0, this->currentState, true, this->ply, optimalMove, -(__DBL_MAX__ - 1), __DBL_MAX__, this->currentState->colourOfCurrentPlayer);
     // learning rate
+    //  cout<<"Hi"<<endl;
     // ? preferably decrease as model learns
     double learningRate = 0.0001;
 

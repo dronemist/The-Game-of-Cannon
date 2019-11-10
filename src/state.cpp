@@ -37,11 +37,18 @@ void State::removePositonFromBoard(Board &newBoard, int x, int y) {
 
 State::State(int rows, int columns, Colour colour) {
     Board b(rows, columns);
-    this->currentBoard = b;
+    (this->currentBoard) = b;
     this->moveFromPreviousState = "";
     this->previousState = nullptr;
     // adding a default value
     this->colourOfCurrentPlayer = colour;
+    
+}
+
+State:: ~State(){
+
+  // (this->currentBoard.freeMemory());
+
 }
 
 void State::expand(vector<State*> &answer) {

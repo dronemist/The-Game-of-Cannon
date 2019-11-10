@@ -17,6 +17,8 @@ public:
     void expand(std::vector<State*> &);
     /// constructor;
     State(int = 8, int = 8, Colour = Colour::black);
+    /// destructor
+    ~State();
     /// This function takes the move
     void makeMove(std::string, Board &);
     /// Colour of the player whose move it is;
