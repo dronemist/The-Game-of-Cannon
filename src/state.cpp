@@ -15,8 +15,9 @@ using namespace std;
 * 3 : townhall
 * 4 : soldier attack
 * 5 : soldier defence
+* 6 : minimumTownHallHeuristic
 */
-vector<double> parameters = {1.0, 1.0, 1.0, 10000.0, 3.0, 2.0}; 
+vector<double> parameters = {1.0, 1.0, 1.0, 10000.0, 3.0, 2.0, 20}; 
 //vector<double> parameters = {0.742608, 0.609946, 0.758162, 10000, 3.10526, 1.97368};
 
 
@@ -369,11 +370,13 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   //// vector<int> parameters;
 
   ////int differenceOfSoldier;
+  // Dimensions of board
+  int numCols = this->currentBoard.getColumns();  
+  int numRows = this->currentBoard.getRows();
 
   // Soldier count
   int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
   int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
-  int numCols = this->currentBoard.getColumns();  
   int maxSoldiersOneSide = 3 * ( numCols/ 2);
 
 
@@ -425,9 +428,13 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   double townhallScore = parameters[3];
 
 
-  if (numberOfSelfSoldiers + numberOfOpponentSoldiers < (maxSoldiersOneSide)) {
-    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, 20);
-    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, 20);
+  if (numberOfSelfSoldiers + numberOfOpponentSoldiers <= maxSoldiersOneSide) {
+    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+
+    // minimumTownHallDistanceHeuristicBlack = minimumTownHallDistanceHeuristicBlack >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicBlack : 0;
+
+    // minimumTownHallDistanceHeuristicWhite = minimumTownHallDistanceHeuristicWhite >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicWhite : 0;
 
     score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
   }
