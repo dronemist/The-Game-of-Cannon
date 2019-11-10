@@ -294,7 +294,7 @@ double State::getMinimumTownHallDistanceHeuristicValue(int colourOfPlayerToBeEva
       spanLeftLimit = max(spanLeftLimit, 0);
       // Correcting span right
       spanRightLimit = spanRightLimit % 2 == 0 ? spanRightLimit : spanRightLimit + 1;
-      spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns());
+      spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns() - 1);
       
       // Looking at white townhalls
       for(int i=spanLeftLimit; i<=spanRightLimit; i+=2) {
@@ -321,7 +321,7 @@ double State::getMinimumTownHallDistanceHeuristicValue(int colourOfPlayerToBeEva
 
       // Correcting right span
       spanRightLimit = spanRightLimit % 2 == 1 ? spanRightLimit : spanRightLimit + 1;
-      spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns());
+      spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns() - 1);
       
       // Looking at white townhalls
       for(int i=spanLeftLimit; i<=spanRightLimit; i+=2){
