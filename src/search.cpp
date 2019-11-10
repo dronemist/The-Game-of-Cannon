@@ -71,7 +71,10 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
             double minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour);
             alpha = max(alpha, minVal);
             if(alpha >= beta) {
-                delete nextStates[i];
+                // delete nextStates[i];
+                loop(j, i, nextStates.size()){
+                    delete nextStates[j];
+                }
                 return minVal;
             }
             if(minVal > best && currentDepth == 0) {
@@ -88,13 +91,16 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         loop(i, 0, nextStates.size()) {
             // calculating max values of child of min
             double maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour);
-            // deleting state pointer
-            delete nextStates[i];
             beta = min(beta, maxVal);
             if(alpha >= beta) {
+                loop(j, i, nextStates.size()){
+                    delete nextStates[j];
+                }
                 return maxVal;
             }
             best = min(best, maxVal);
+            // deleting state pointer
+            delete nextStates[i];
         }
         return best;
     }
