@@ -425,7 +425,7 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
   double townhallScore = parameters[3];
 
 
-  if (numberOfSelfSoldiers + numberOfOpponentSoldiers <= 15) {
+  if (numberOfSelfSoldiers + numberOfOpponentSoldiers < (maxSoldiersOneSide)) {
     double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, 20);
     double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, 20);
 
