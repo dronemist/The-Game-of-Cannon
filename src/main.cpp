@@ -49,7 +49,7 @@ int main() {
     clock_t end;
     double elapsedSeconds;
     double timeRemaining;
-    int maxNumberOfPlayers = (column / 2) * 3;
+    int maxNumberOfPlayers = (column) * 3;
     int numberOfPlayers = maxNumberOfPlayers;
     clock_t timeTemp1;
     clock_t timeTemp2;
@@ -78,7 +78,7 @@ int main() {
         
         if(numberOfPlayers <= 7 && timeRemaining > 40) {
             g1.ply = 7;
-        } else if(numberOfPlayers <= (maxNumberOfPlayers/2) && timeRemaining > 30) {
+        } else if(numberOfPlayers <= (12) && timeRemaining > 30) {
             g1.ply = 6;
         } else if(numberOfPlayers < 21 && timeRemaining > 20) {
             g1.ply = 5;
@@ -86,10 +86,10 @@ int main() {
         else {
             g1.ply = 4;
         }
-        if(timeRemaining < 5) {
+        if(timeRemaining < 10) {
             g1.ply = 3;
         }
-        if(timeRemaining < 2) {
+        if(timeRemaining < 5) {
             g1.ply = 2;
         }  
     }

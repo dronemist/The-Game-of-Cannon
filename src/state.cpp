@@ -365,140 +365,428 @@ double State::getMinimumTownHallDistanceHeuristicValue(int colourOfPlayerToBeEva
 
 double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &features) {
 
-  features.clear();
-  vector<double> parametersTemp = parameters;
-  // Get the black and white soldiers
-  int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
-  int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
-  int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
-  int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
-
-  // ? Right left with respect to our screen, not with respect to rotation of board
-  double defenceScoreRightWingBlack = 0.0; 
-  double offenceScoreRightWingBlack = 0.0;
-  double defenceScoreLeftWingBlack = 0.0;
-  double offenceScoreLeftWingBlack = 0.0;
-
-  //// vector<int> parameters;
-
-  ////int differenceOfSoldier;
   // Dimensions of board
   int numCols = this->currentBoard.getColumns();  
   int numRows = this->currentBoard.getRows();
 
-  // Soldier count
-  int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
-  int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
-  int maxSoldiersOneSide = 3 * ( numCols/ 2);
+
+  if (numCols == 8 && numRows == 8){
+    features.clear();
+    vector<double> parametersTemp = parameters;
+    // Get the black and white soldiers
+    int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
+    int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
+    int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
+    int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
+
+    // ? Right left with respect to our screen, not with respect to rotation of board
+    double defenceScoreRightWingBlack = 0.0; 
+    double offenceScoreRightWingBlack = 0.0;
+    double defenceScoreLeftWingBlack = 0.0;
+    double offenceScoreLeftWingBlack = 0.0;
+
+    //// vector<int> parameters;
+
+    ////int differenceOfSoldier;
 
 
-  // Black score
-  vector<double> blackFeatures(parametersTemp.size(), 0.0);
-  // Horizontal cannon
-  // TODO: correct this for 10 X 10
-  // ! Kept like this to reciprocate results
-  parameters[0] *= ((maxSoldiersOneSide + (numCols/2) - numberOfSelfSoldiers)/ (numCols/2));
-  // Diagonal cannon
-  parameters[1] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
-  // Vertical cannon
-  parameters[2] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
-  // parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
-  this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
-                                      &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack, blackFeatures);
+    // Soldier count
+    int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
+    int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
+    int maxSoldiersOneSide = 3 * ( numCols/ 2);
 
-  blackFeatures[3] = blackTownhalls;
 
-  // TODO: can add mobility
-  // White score
-  vector<double> whiteFeatures(parametersTemp.size(), 0.0);
-  double defenceScoreRightWingWhite = 0.0; 
-  double offenceScoreRightWingWhite = 0.0;
-  double defenceScoreLeftWingWhite = 0.0;
-  double offenceScoreLeftWingWhite = 0.0;
+    // Black score
+    vector<double> blackFeatures(parametersTemp.size(), 0.0);
+    // Horizontal cannon
+    // TODO: correct this for 10 X 10
+    // ! Kept like this to reciprocate results
+    parameters[0] *= ((maxSoldiersOneSide + (numCols/2) - numberOfSelfSoldiers)/ (numCols/2));
+    // Diagonal cannon
+    parameters[1] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
+    // Vertical cannon
+    parameters[2] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
+    // parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
+    this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
+                                        &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack, blackFeatures);
 
-  this->calculateStateScoreParameters(1, &defenceScoreRightWingWhite, &offenceScoreRightWingWhite,
-                                      &defenceScoreLeftWingWhite, &offenceScoreLeftWingWhite, whiteFeatures);
+    blackFeatures[3] = blackTownhalls;
 
-  whiteFeatures[3] = whiteTownhalls;
-  // Overall score
-  double value;
-  double score = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack 
-  - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite 
-  + defenceScoreRightWingBlack + offenceScoreRightWingBlack 
-  - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
-  
-  // Calculating the feature values
-  loop(i, 0, whiteFeatures.size()) {
-    if(colourOfPlayerToBeEvaluated == Colour::black) {
-      features.push_back(blackFeatures[i] - whiteFeatures[i]);
-    } else {
-      features.push_back(whiteFeatures[i] - blackFeatures[i]);
+    // TODO: can add mobility
+    // White score
+    vector<double> whiteFeatures(parametersTemp.size(), 0.0);
+    double defenceScoreRightWingWhite = 0.0; 
+    double offenceScoreRightWingWhite = 0.0;
+    double defenceScoreLeftWingWhite = 0.0;
+    double offenceScoreLeftWingWhite = 0.0;
+
+    this->calculateStateScoreParameters(1, &defenceScoreRightWingWhite, &offenceScoreRightWingWhite,
+                                        &defenceScoreLeftWingWhite, &offenceScoreLeftWingWhite, whiteFeatures);
+
+    whiteFeatures[3] = whiteTownhalls;
+    // Overall score
+    double value;
+    double score = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack 
+    - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite 
+    + defenceScoreRightWingBlack + offenceScoreRightWingBlack 
+    - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
+    
+    // Calculating the feature values
+    loop(i, 0, whiteFeatures.size()) {
+      if(colourOfPlayerToBeEvaluated == Colour::black) {
+        features.push_back(blackFeatures[i] - whiteFeatures[i]);
+      } else {
+        features.push_back(whiteFeatures[i] - blackFeatures[i]);
+      }
+    }
+
+    // Townhall score 
+    double townhallScore = parameters[3];
+    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+
+    bool activateEndgame = (numberOfSelfSoldiers + numberOfOpponentSoldiers < 12) 
+                            ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicBlack >= parameters[6] * (numRows - 2)))
+                            ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicWhite >= parameters[6] * (numRows - 2)));
+
+    if (activateEndgame) {
+      // double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+      // double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+
+      // minimumTownHallDistanceHeuristicBlack = minimumTownHallDistanceHeuristicBlack >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicBlack : 0;
+
+      // minimumTownHallDistanceHeuristicWhite = minimumTownHallDistanceHeuristicWhite >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicWhite : 0;
+
+      score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
+    }
+
+
+    
+    // If no soldiers are left
+    if(this->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0) {
+      blackTownhalls--;
+    } else if(this->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0) {
+      whiteTownhalls--;
+    }
+    
+    // TODO: correct this if
+    if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
+
+      value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * score;
+    }
+    else {
+      value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 1 * (score) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+    }
+
+    // Minimum number of townhalls
+    int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
+
+    if(whiteTownhalls < minimumTownhalls) {
+      if(blackTownhalls == minimumTownhalls) {
+        value = 80000.0;
+      } else {
+        value = 100000.0;
+      }
+    }
+    if(blackTownhalls < minimumTownhalls) {
+      if(whiteTownhalls == minimumTownhalls) {
+        value = -80000.0;
+      } else {
+        value = -100000.0;
+      }
+    }
+    // Restoring value
+    parameters = parametersTemp;
+    if(colourOfPlayerToBeEvaluated == Colour::black)
+        return value;
+    else
+    {
+        return -value;
+    }
+
+  }
+
+  if (numCols == 10 && numRows == 10){
+    features.clear();
+    vector<double> parametersTemp = parameters;
+    // Get the black and white soldiers
+    int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
+    int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
+    int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
+    int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
+
+    // ? Right left with respect to our screen, not with respect to rotation of board
+    double defenceScoreRightWingBlack = 0.0; 
+    double offenceScoreRightWingBlack = 0.0;
+    double defenceScoreLeftWingBlack = 0.0;
+    double offenceScoreLeftWingBlack = 0.0;
+
+    //// vector<int> parameters;
+
+    ////int differenceOfSoldier;
+
+    // Soldier count
+    int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
+    int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
+    int maxSoldiersOneSide = 3 * ( numCols/ 2);
+
+
+    if (numberOfOpponentSoldiers + numberOfSelfSoldiers > 25){
+      parameters = {0.742608, 0.609946, 0.758162, 10000, 3.10526, 1.97368, 20};
+    }
+    else{
+      parameters = {1.0, 1.0, 1.0, 10000.0, 3.0, 2.0, 20}; 
+    }
+
+    // Black score
+    vector<double> blackFeatures(parametersTemp.size(), 0.0);
+    // Horizontal cannon
+    // TODO: correct this for 10 X 10
+    // ! Kept like this to reciprocate results
+    parameters[0] *= ((maxSoldiersOneSide + (numCols/2) - numberOfSelfSoldiers)/ (numCols/2));
+    // Diagonal cannon
+    parameters[1] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
+    // Vertical cannon
+    parameters[2] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
+    // parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
+    this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
+                                        &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack, blackFeatures);
+
+    blackFeatures[3] = blackTownhalls;
+
+    // TODO: can add mobility
+    // White score
+    vector<double> whiteFeatures(parametersTemp.size(), 0.0);
+    double defenceScoreRightWingWhite = 0.0; 
+    double offenceScoreRightWingWhite = 0.0;
+    double defenceScoreLeftWingWhite = 0.0;
+    double offenceScoreLeftWingWhite = 0.0;
+
+    this->calculateStateScoreParameters(1, &defenceScoreRightWingWhite, &offenceScoreRightWingWhite,
+                                        &defenceScoreLeftWingWhite, &offenceScoreLeftWingWhite, whiteFeatures);
+
+    whiteFeatures[3] = whiteTownhalls;
+    // Overall score
+    double value;
+    double score = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack 
+    - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite 
+    + defenceScoreRightWingBlack + offenceScoreRightWingBlack 
+    - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
+    
+    // Calculating the feature values
+    loop(i, 0, whiteFeatures.size()) {
+      if(colourOfPlayerToBeEvaluated == Colour::black) {
+        features.push_back(blackFeatures[i] - whiteFeatures[i]);
+      } else {
+        features.push_back(whiteFeatures[i] - blackFeatures[i]);
+      }
+    }
+
+    // Townhall score 
+    double townhallScore = parameters[3];
+    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+
+    bool activateEndgame = (numberOfSelfSoldiers + numberOfOpponentSoldiers < 12) 
+                            ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicBlack >= parameters[6] * (numRows - 2)))
+                            ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicWhite >= parameters[6] * (numRows - 2)));
+
+    if (activateEndgame) {
+      // double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+      // double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+
+      // minimumTownHallDistanceHeuristicBlack = minimumTownHallDistanceHeuristicBlack >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicBlack : 0;
+
+      // minimumTownHallDistanceHeuristicWhite = minimumTownHallDistanceHeuristicWhite >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicWhite : 0;
+
+      score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
+    }
+
+    
+    // If no soldiers are left
+    if(this->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0) {
+      blackTownhalls--;
+    } else if(this->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0) {
+      whiteTownhalls--;
+    }
+    
+    // TODO: correct this if
+    if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
+
+      value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * score;
+    }
+    else {
+      value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 1 * (score) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+    }
+
+    if (blackTownhalls != whiteTownhalls){
+      value = townhallScore * (blackTownhalls - whiteTownhalls);
+    }
+
+    // Minimum number of townhalls
+    int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
+
+    if(whiteTownhalls < minimumTownhalls) {
+      if(blackTownhalls == minimumTownhalls) {
+        value = 80000.0;
+      } else {
+        value = 100000.0;
+      }
+    }
+    if(blackTownhalls < minimumTownhalls) {
+      if(whiteTownhalls == minimumTownhalls) {
+        value = -80000.0;
+      } else {
+        value = -100000.0;
+      }
+    }
+    // Restoring value
+    parameters = parametersTemp;
+    if(colourOfPlayerToBeEvaluated == Colour::black)
+        return value;
+    else
+    {
+        return -value;
     }
   }
 
-  // Townhall score 
-  double townhallScore = parameters[3];
-  double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
-  double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
-
-  bool activateEndgame = (numberOfSelfSoldiers + numberOfOpponentSoldiers < 12) 
-                          ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicBlack >= parameters[6] * (numRows - 2)))
-                          ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicWhite >= parameters[6] * (numRows - 2)));
-
-  if (activateEndgame) {
-    // double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
-    // double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
-
-    // minimumTownHallDistanceHeuristicBlack = minimumTownHallDistanceHeuristicBlack >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicBlack : 0;
-
-    // minimumTownHallDistanceHeuristicWhite = minimumTownHallDistanceHeuristicWhite >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicWhite : 0;
-
-    score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
-  }
-
-
+  if (numCols == 8 && numRows == 10){
   
-  // If no soldiers are left
-  if(this->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0) {
-    blackTownhalls--;
-  } else if(this->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0) {
-    whiteTownhalls--;
-  }
-  
-  // TODO: correct this if
-  if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
+    parameters = {0.8, 0.8, 0.8, 10000.0, 2.4, 1.6, 16}; 
+    features.clear();
+    vector<double> parametersTemp = parameters;
+    // Get the black and white soldiers
+    int blackSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[0].size();
+    int whiteSoldiers = this->currentBoard.positionsOfSoldiersOnBoard[1].size();
+    int blackTownhalls = this->currentBoard.numberOfBlackTownhalls();
+    int whiteTownhalls = this->currentBoard.numberOfWhiteTownhalls();
 
-    value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * score;
-  }
-  else {
-    value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 1 * (score) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
-  }
+    // ? Right left with respect to our screen, not with respect to rotation of board
+    double defenceScoreRightWingBlack = 0.0; 
+    double offenceScoreRightWingBlack = 0.0;
+    double defenceScoreLeftWingBlack = 0.0;
+    double offenceScoreLeftWingBlack = 0.0;
 
-  // Minimum number of townhalls
-  int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
+    //// vector<int> parameters;
 
-  if(whiteTownhalls < minimumTownhalls) {
-    if(blackTownhalls == minimumTownhalls) {
-      value = 80000.0;
-    } else {
-      value = 100000.0;
+    ////int differenceOfSoldier;
+
+    // Soldier count
+    int numberOfSelfSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? blackSoldiers : whiteSoldiers;
+    int numberOfOpponentSoldiers = colourOfPlayerToBeEvaluated == Colour::black ? whiteSoldiers : blackSoldiers;
+    int maxSoldiersOneSide = 3 * ( numCols/ 2);
+
+
+    // Black score
+    vector<double> blackFeatures(parametersTemp.size(), 0.0);
+    // Horizontal cannon
+    // TODO: correct this for 10 X 10
+    // ! Kept like this to reciprocate results
+    parameters[0] *= ((maxSoldiersOneSide + (numCols/2) - numberOfSelfSoldiers)/ (numCols/2));
+    // Diagonal cannon
+    parameters[1] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
+    // Vertical cannon
+    parameters[2] *= (numberOfOpponentSoldiers/(numCols/2) + 1);
+    // parameters = {(16 - numberOfSelfSoldiers)/4, numberOfOpponentSoldiers/4 + 1, numberOfOpponentSoldiers/4 + 1};
+    this->calculateStateScoreParameters(0, &defenceScoreRightWingBlack, &offenceScoreRightWingBlack,
+                                        &defenceScoreLeftWingBlack, &offenceScoreLeftWingBlack, blackFeatures);
+
+    blackFeatures[3] = blackTownhalls;
+
+    // TODO: can add mobility
+    // White score
+    vector<double> whiteFeatures(parametersTemp.size(), 0.0);
+    double defenceScoreRightWingWhite = 0.0; 
+    double offenceScoreRightWingWhite = 0.0;
+    double defenceScoreLeftWingWhite = 0.0;
+    double offenceScoreLeftWingWhite = 0.0;
+
+    this->calculateStateScoreParameters(1, &defenceScoreRightWingWhite, &offenceScoreRightWingWhite,
+                                        &defenceScoreLeftWingWhite, &offenceScoreLeftWingWhite, whiteFeatures);
+
+    whiteFeatures[3] = whiteTownhalls;
+    // Overall score
+    double value;
+    double score = offenceScoreLeftWingBlack + defenceScoreLeftWingBlack 
+    - defenceScoreLeftWingWhite - offenceScoreLeftWingWhite 
+    + defenceScoreRightWingBlack + offenceScoreRightWingBlack 
+    - offenceScoreRightWingWhite - defenceScoreRightWingWhite;
+    
+    // Calculating the feature values
+    loop(i, 0, whiteFeatures.size()) {
+      if(colourOfPlayerToBeEvaluated == Colour::black) {
+        features.push_back(blackFeatures[i] - whiteFeatures[i]);
+      } else {
+        features.push_back(whiteFeatures[i] - blackFeatures[i]);
+      }
     }
-  }
-  if(blackTownhalls < minimumTownhalls) {
-    if(whiteTownhalls == minimumTownhalls) {
-      value = -80000.0;
-    } else {
-      value = -100000.0;
+
+    // Townhall score 
+    double townhallScore = parameters[3];
+    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+
+    bool activateEndgame = (numberOfSelfSoldiers + numberOfOpponentSoldiers < 12) 
+                            ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicBlack >= parameters[6] * (numRows - 2)))
+                            ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicWhite >= parameters[6] * (numRows - 2)));
+
+    if (activateEndgame) {
+      // double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+      // double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+
+      // minimumTownHallDistanceHeuristicBlack = minimumTownHallDistanceHeuristicBlack >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicBlack : 0;
+
+      // minimumTownHallDistanceHeuristicWhite = minimumTownHallDistanceHeuristicWhite >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicWhite : 0;
+
+      score += minimumTownHallDistanceHeuristicBlack - minimumTownHallDistanceHeuristicWhite;
     }
+
+
+    
+    // If no soldiers are left
+    if(this->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0) {
+      blackTownhalls--;
+    } else if(this->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0) {
+      whiteTownhalls--;
+    }
+    
+    // TODO: correct this if
+    if(blackTownhalls > whiteTownhalls || (blackTownhalls == whiteTownhalls && colourOfPlayerToBeEvaluated == Colour::black)){
+
+      value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 0 * (defenceScoreLeftWingBlack - offenceScoreLeftWingWhite) + 1 * score;
+    }
+    else {
+      value = (blackSoldiers - whiteSoldiers) + townhallScore * (blackTownhalls - whiteTownhalls) + 1 * (score) + 0 * (offenceScoreLeftWingBlack - defenceScoreLeftWingWhite);
+    }
+
+    // Minimum number of townhalls
+    int minimumTownhalls = (this->currentBoard.getColumns() / 2) - 1;
+
+    if(whiteTownhalls < minimumTownhalls) {
+      if(blackTownhalls == minimumTownhalls) {
+        value = 80000.0;
+      } else {
+        value = 100000.0;
+      }
+    }
+    if(blackTownhalls < minimumTownhalls) {
+      if(whiteTownhalls == minimumTownhalls) {
+        value = -80000.0;
+      } else {
+        value = -100000.0;
+      }
+    }
+    // Restoring value
+    parameters = parametersTemp;
+    if(colourOfPlayerToBeEvaluated == Colour::black)
+        return value;
+    else
+    {
+        return -value;
+    }
+
   }
-  // Restoring value
-  parameters = parametersTemp;
-  if(colourOfPlayerToBeEvaluated == Colour::black)
-      return value;
-  else
-  {
-      return -value;
-  }
+
 }
 
 bool comparePosition(Position p1, Position p2) {
