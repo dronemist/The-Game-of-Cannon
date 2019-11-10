@@ -290,12 +290,14 @@ double State::getMinimumTownHallDistanceHeuristicValue(int colourOfPlayerToBeEva
       spanRightLimit = soldierHorizontalPosition + soldierVerticalPosition; 
 
       // Making left limit even since white townhalls at even position
-      spanLeftLimit = spanLeftLimit % 2 == 0 ? spanLeftLimit : spanLeftLimit + 1; 
+      spanLeftLimit = spanLeftLimit % 2 == 0 ? spanLeftLimit : spanLeftLimit - 1; 
       spanLeftLimit = max(spanLeftLimit, 0);
+      // Correcting span right
+      spanRightLimit = spanRightLimit % 2 == 0 ? spanRightLimit : spanRightLimit + 1;
       spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns());
       
       // Looking at white townhalls
-      for(int i=spanLeftLimit; i<spanRightLimit; i+=2) {
+      for(int i=spanLeftLimit; i<=spanRightLimit; i+=2) {
         bool doesTownHallExist = this->currentBoard.cannonBoard[0][i] != nullptr 
                               && this->currentBoard.cannonBoard[0][i]->getType() == PieceType::townhall;
 
@@ -314,12 +316,15 @@ double State::getMinimumTownHallDistanceHeuristicValue(int colourOfPlayerToBeEva
       spanRightLimit = soldierHorizontalPosition + (numRowsMinusOne - soldierVerticalPosition); 
 
       // Making left limit odd since black townhalls at odd positions
-      spanLeftLimit = spanLeftLimit % 2 == 1 ? spanLeftLimit : spanLeftLimit + 1; 
+      spanLeftLimit = spanLeftLimit % 2 == 1 ? spanLeftLimit : spanLeftLimit - 1; 
       spanLeftLimit = max(spanLeftLimit, 1);
+
+      // Correcting right span
+      spanRightLimit = spanRightLimit % 2 == 1 ? spanRightLimit : spanRightLimit + 1;
       spanRightLimit = min(spanRightLimit, this->currentBoard.getColumns());
       
       // Looking at white townhalls
-      for(int i=spanLeftLimit; i<spanRightLimit; i+=2){
+      for(int i=spanLeftLimit; i<=spanRightLimit; i+=2){
         bool doesTownHallExist = this->currentBoard.cannonBoard[numRowsMinusOne][i] != nullptr 
                               && this->currentBoard.cannonBoard[numRowsMinusOne][i]->getType() == PieceType::townhall;
 
@@ -426,11 +431,16 @@ double State::getValue(Colour colourOfPlayerToBeEvaluated, vector<double> &featu
 
   // Townhall score 
   double townhallScore = parameters[3];
+  double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+  double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
 
+  bool activateEndgame = (numberOfSelfSoldiers + numberOfOpponentSoldiers < 12) 
+                          ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicBlack >= parameters[6] * (numRows - 2)))
+                          ||((numberOfSelfSoldiers + numberOfOpponentSoldiers < 16) && (minimumTownHallDistanceHeuristicWhite >= parameters[6] * (numRows - 2)));
 
-  if (numberOfSelfSoldiers + numberOfOpponentSoldiers <= maxSoldiersOneSide) {
-    double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
-    double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
+  if (activateEndgame) {
+    // double minimumTownHallDistanceHeuristicBlack = getMinimumTownHallDistanceHeuristicValue(0, parameters[6]);
+    // double minimumTownHallDistanceHeuristicWhite = getMinimumTownHallDistanceHeuristicValue(1, parameters[6]);
 
     // minimumTownHallDistanceHeuristicBlack = minimumTownHallDistanceHeuristicBlack >= parameters[6] * numRows/2 ? minimumTownHallDistanceHeuristicBlack : 0;
 
