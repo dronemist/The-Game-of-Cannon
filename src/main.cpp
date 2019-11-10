@@ -76,9 +76,9 @@ int main() {
         numberOfPlayers = g1.currentState->currentBoard.positionsOfSoldiersOnBoard[0].size() 
                             + g1.currentState->currentBoard.positionsOfSoldiersOnBoard[1].size();
         
-        if(numberOfPlayers <= 7 && timeRemaining > 40) {
+        if(numberOfPlayers < 7 && timeRemaining > 40) {
             g1.ply = 7;
-        } else if(numberOfPlayers <= (12) && timeRemaining > 30) {
+        } else if(numberOfPlayers < (12) && timeRemaining > 30) {
             g1.ply = 6;
         } else if(numberOfPlayers < 21 && timeRemaining > 20) {
             g1.ply = 5;
