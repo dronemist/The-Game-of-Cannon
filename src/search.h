@@ -13,5 +13,5 @@
 ///   - optimalMove: move for most optimal play
 ///   - alpha
 ///   - beta
-double minimax(int, State *, bool, int, std::string &, double, double, Colour);
+double minimax(int, State *, bool, int, std::string &, double, double, Colour, bool);
 #endif

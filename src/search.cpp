@@ -32,7 +32,9 @@ struct myComp {
 ///   - alpha 
 ///   - beta
 ///   - colour: colour of root node
-double minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, double alpha, double beta, Colour colour) {
+///   - passingShotAllowed
+double minimax(int currentDepth, State *currentState, bool isMax, int ply, string &optimalMove, double alpha, double beta, Colour colour, bool passingShotAllowed) {
+
 
     Colour oppositeOfColour = (colour == Colour::black) ? Colour::white : Colour::black;
     Colour colourOfMovingPlayer = (currentDepth % 2 == 0) ? colour : oppositeOfColour;
@@ -41,18 +43,27 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         return currentState->getValue(colour);
     }
 
+    
+
     // Minimum number of townhalls allowed
     int minimumTownhalls = (currentState->currentBoard.getColumns() / 2) - 2;
 
-    // Don't consider moves if townhall limit reached
-    bool gameOver = (colour == Colour::black && currentState->currentBoard.numberOfWhiteTownhalls() == minimumTownhalls)
-    || (colour == Colour::white && currentState->currentBoard.numberOfBlackTownhalls() == minimumTownhalls);
+    // Don't consider moves if townhall limit reached or soldiers finished
+    bool gameOver = (currentState->currentBoard.numberOfWhiteTownhalls() <= minimumTownhalls)
+    || (currentState->currentBoard.numberOfBlackTownhalls() <= minimumTownhalls)
+    || (currentState->currentBoard.positionsOfSoldiersOnBoard[0].size() == 0)
+    || (currentState->currentBoard.positionsOfSoldiersOnBoard[1].size() == 0);
     if(gameOver) {
         return currentState->getValue(colour);
     }
     
+  
+
     vector<State*> nextStates;
-    currentState->expand(nextStates);
+    currentState->expand(nextStates, passingShotAllowed);
+
+    
+
     if (nextStates.size() == 0) {
       return currentState->getValue(colour);
     }
@@ -63,13 +74,16 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         sort(nextStates.begin(), nextStates.end(), myCompInstance);
 
     if(isMax) {
-        double best = INT32_MIN;
+        double best = -(__DBL_MAX__ - 1);
         loop(i, 0, nextStates.size()) {
             // calculating min values of child of max
-            double minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour);
+            double minVal = minimax(currentDepth + 1, nextStates[i], false, ply, optimalMove, alpha, beta, colour, passingShotAllowed);
             alpha = max(alpha, minVal);
             if(alpha >= beta) {
-                delete nextStates[i];
+                // delete nextStates[i];
+                loop(j, i, nextStates.size()){
+                    delete nextStates[j];
+                }
                 return minVal;
             }
             if(minVal > best && currentDepth == 0) {
@@ -82,17 +96,20 @@ double minimax(int currentDepth, State *currentState, bool isMax, int ply, strin
         }
         return best;
     } else {
-        double best = INT32_MAX;
+        double best = __DBL_MAX__;
         loop(i, 0, nextStates.size()) {
             // calculating max values of child of min
-            double maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour);
-            // deleting state pointer
-            delete nextStates[i];
+            double maxVal = minimax(currentDepth + 1, nextStates[i], true, ply, optimalMove, alpha, beta, colour, passingShotAllowed);
             beta = min(beta, maxVal);
             if(alpha >= beta) {
+                loop(j, i, nextStates.size()){
+                    delete nextStates[j];
+                }
                 return maxVal;
             }
             best = min(best, maxVal);
+            // deleting state pointer
+            delete nextStates[i];
         }
         return best;
     }
