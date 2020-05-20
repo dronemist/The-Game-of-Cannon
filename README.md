@@ -7,4 +7,4 @@ Designed a bot for the game of canon.<br>
  - Also added several heuristics to greatly reduce search time.
  
  ### Results
- Reached the semi-finals for the 8 X 8 variant and quarter finals for the 10 X 8 and 10 X 10 variants.
+ Reached the semi-finals for the 8 X 8 variant and quarter finals for the 10 X 8 and 10 X 10 variants in a class wide knockout competition between bots.
